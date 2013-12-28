@@ -3,6 +3,9 @@
 
 #include <QWidget>
 #include <QTextEdit>
+#include <QPushButton>
+#include <QLabel>
+#include <QGroupBox>
 
 namespace Ui {
 class Widget;
@@ -19,6 +22,12 @@ public:
 private:
     Ui::Widget *ui;
     QTextEdit *textEdit;
+    QPushButton *loadKifButton;
+    QLabel *bla;
+
+    QGroupBox *leftMenuGroupBox;
+    QGroupBox *topMenuGroupBox;
+    QGroupBox *textEditGroupBox;
 };
 
 #endif // WIDGET_H
