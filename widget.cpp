@@ -5,6 +5,8 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 
+
+//
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Widget)
