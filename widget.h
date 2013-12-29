@@ -5,7 +5,13 @@
 #include <QTextEdit>
 #include <QPushButton>
 #include <QLabel>
+#include <QLineEdit>
 #include <QGroupBox>
+#include <QComboBox>
+#include <QTableWidget>
+#include <QTabWidget>
+
+#include <QDir>
 
 namespace Ui {
 class Widget;
@@ -19,15 +25,52 @@ public:
     explicit Widget(QWidget *parent = 0);
     ~Widget();
 
+private slots:
+    void browse();
+    void find();
+    void openFileOfItem(int row, int column);
+
 private:
     Ui::Widget *ui;
-    QTextEdit *textEdit;
-    QPushButton *loadKifButton;
-    QLabel *bla;
+
+    QTabWidget *tabWidget;
+
+    QTextEdit *textEditMain;
+    QTextEdit *textEditStaticData;
+    QTextEdit *textEditDebug;
+
+
+    QLineEdit *lineEditFindfile;
+    QPushButton *loadButton;
+
+    // Left menu
+    QComboBox *fileComboBox;
+    QComboBox *directoryComboBox;
+    QLabel *fileLabel;
+    QLabel *directoryLabel;
+    QLabel *filesFoundLabel;
+    QPushButton *browseButton;
+    QPushButton *findButton;
+    QTableWidget *filesTable;
+
+    QDir currentDir;
+
+    QLabel *labelTopMenu;
 
     QGroupBox *leftMenuGroupBox;
     QGroupBox *topMenuGroupBox;
     QGroupBox *textEditGroupBox;
+
+private:
+    void setUpLayout();
+    void initialize();
+
+    QStringList findFiles(const QStringList &files, const QString &text);
+    void showFiles(const QStringList &files);
+    QPushButton *createButton(const QString &text, const char *member);
+    QComboBox *createComboBox(const QString &text = QString());
+    void createFilesTable();
+    void createMainDisplay();
 };
 
 #endif // WIDGET_H
