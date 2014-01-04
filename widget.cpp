@@ -1,5 +1,6 @@
 #include "widget.h"
 #include "ui_widget.h"
+#include "fileloader.h"
 
 #include <QGridLayout>
 #include <QVBoxLayout>
@@ -19,6 +20,7 @@ Widget::Widget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Widget)
 {
+    afac = 0;
     ui->setupUi(this);
     setUpLayout();
     initialize();
@@ -115,7 +117,7 @@ void Widget::createFilesTable()
     filesTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
     filesTable->verticalHeader()->hide();
     filesTable->setShowGrid(true);
-    filesTable->setMinimumWidth(300);
+    filesTable->setMinimumWidth(360);
 
     connect(filesTable, SIGNAL(cellActivated(int,int)),
             this, SLOT(openFileOfItem(int,int)));
@@ -148,28 +150,64 @@ void Widget::initialize(){
     textEditMain->append(tr("  --------------------------- HELLO! ---------------------------  \n"));
     connect(directoryComboBox, SIGNAL(editTextChanged(QString)), this, SLOT(find()));
     find();
+    afac++;
 }
 
 /**
  * FILE LOGIC
  */
 
+//void Widget::openFileOfItem(int row, int /* column */)
+//{
+//    tabWidget->setCurrentIndex(1);
+//    textEditStaticData->clear();
+
+//    QTableWidgetItem *item = filesTable->item(row, 0);
+//    //QDesktopServices::openUrl(QUrl::fromLocalFile(currentDir.absoluteFilePath(item->text())));
+//    QFile file(currentDir.absoluteFilePath(item->text()));
+
+
+//    if (file.open(QIODevice::ReadOnly)) {
+//        QString line;
+//        QTextStream in(&file);
+//        //qint64 size = QFileInfo(file).size();
+//        int maxCharDisplayed = 1 << 18;
+//        int nbCharDisplayed = 0;
+
+//        while (!in.atEnd() && (nbCharDisplayed<maxCharDisplayed)) {
+//            line = in.readLine();
+//            if((nbCharDisplayed+line.size())>=maxCharDisplayed){
+//                line.truncate(maxCharDisplayed-nbCharDisplayed);
+//            }
+//            textEditStaticData->append(line);
+//            nbCharDisplayed += (line.size() + 1);
+//        }
+//        qDebug() << nbCharDisplayed << '\t' << maxCharDisplayed;
+//        if(nbCharDisplayed>=maxCharDisplayed){
+//            qDebug() << "Truncated file";
+//        }
+//    }
+
+//    QTextCursor cursor = textEditStaticData->textCursor();
+//    cursor.setPosition(0);
+//    textEditStaticData->setTextCursor(cursor);
+//}
+
 void Widget::openFileOfItem(int row, int /* column */)
 {
+    afac++;
     tabWidget->setCurrentIndex(1);
     textEditStaticData->clear();
 
     QTableWidgetItem *item = filesTable->item(row, 0);
     //QDesktopServices::openUrl(QUrl::fromLocalFile(currentDir.absoluteFilePath(item->text())));
-    QFile file(currentDir.absoluteFilePath(item->text()));
-    if (file.open(QIODevice::ReadOnly)) {
-        QString line;
-        QTextStream in(&file);
-        while (!in.atEnd()) {
-            line = in.readLine();
-            textEditStaticData->append(line);
-        }
-    }
+    QString filename(currentDir.absoluteFilePath(item->text()));
+
+
+    FileLoader *fileLoader = new FileLoader(this, filename);
+    connect(fileLoader, &FileLoader::lineProcessed, textEditStaticData, &QTextEdit::append);
+    connect(fileLoader, &FileLoader::finished, fileLoader, &QObject::deleteLater);
+    fileLoader->start();
 
     QTextCursor cursor = textEditStaticData->textCursor();
     cursor.setPosition(0);
@@ -179,7 +217,7 @@ void Widget::openFileOfItem(int row, int /* column */)
 void Widget::browse()
 {
     QString directory = QFileDialog::getExistingDirectory(this,
-                               tr("Find Files"), QDir::currentPath());
+                                                          tr("Find Files"), QDir::currentPath());
 
     if (!directory.isEmpty()) {
         if (directoryComboBox->findText(directory) == -1)
@@ -198,6 +236,7 @@ static void updateComboBox(QComboBox *comboBox)
 
 void Widget::find()
 {
+    afac++;
     filesTable->setRowCount(0);
 
     QString fileName = fileComboBox->currentText();
@@ -230,7 +269,7 @@ void Widget::showFiles(const QStringList &files)
         QTableWidgetItem *fileNameItem = new QTableWidgetItem(files[i]);
         fileNameItem->setFlags(fileNameItem->flags() ^ Qt::ItemIsEditable);
         QTableWidgetItem *sizeItem = new QTableWidgetItem(tr("%1 KB")
-                                             .arg(int((size + 1023) / 1024)));
+                                                          .arg(int((size + 1023) / 1024)));
         sizeItem->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
         sizeItem->setFlags(sizeItem->flags() ^ Qt::ItemIsEditable);
 
@@ -244,3 +283,6 @@ void Widget::showFiles(const QStringList &files)
     filesFoundLabel->setWordWrap(true);
 }
 
+void Widget::appendFile(QString & string){
+    textEditStaticData->append(string);
+}

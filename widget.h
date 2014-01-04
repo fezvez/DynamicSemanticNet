@@ -29,6 +29,7 @@ private slots:
     void browse();
     void find();
     void openFileOfItem(int row, int column);
+    void appendFile(QString & string);
 
 private:
     Ui::Widget *ui;
@@ -60,6 +61,8 @@ private:
     QGroupBox *leftMenuGroupBox;
     QGroupBox *topMenuGroupBox;
     QGroupBox *textEditGroupBox;
+
+    int afac;
 
 private:
     void setUpLayout();

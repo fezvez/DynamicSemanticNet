@@ -4,17 +4,18 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT       += core gui widgets
 
 TARGET = DynamicSemanticNet
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        widget.cpp
 
-HEADERS  += widget.h
+SOURCES += main.cpp\
+        widget.cpp \
+    fileloader.cpp
+
+HEADERS  += widget.h \
+    fileloader.h
 
 FORMS    += widget.ui
