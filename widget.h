@@ -11,7 +11,12 @@
 #include <QTableWidget>
 #include <QTabWidget>
 
+#include <QSharedPointer>
 #include <QDir>
+
+#include "player.h"
+
+typedef QSharedPointer<Player> PPlayer;
 
 namespace Ui {
 class Widget;
@@ -25,11 +30,18 @@ public:
     explicit Widget(QWidget *parent = 0);
     ~Widget();
 
+signals:
+    void kifProcessed(const QStringList &sl);
+
+public slots:
+    void output(const QString &string);
+
+
 private slots:
     void browse();
     void find();
     void openFileOfItem(int row, int column);
-    void appendFile(QString & string);
+
 
 private:
     Ui::Widget *ui;
@@ -63,6 +75,9 @@ private:
     QGroupBox *textEditGroupBox;
 
     int afac;
+
+private:
+    PPlayer player;
 
 private:
     void setUpLayout();

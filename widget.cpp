@@ -1,6 +1,7 @@
 #include "widget.h"
 #include "ui_widget.h"
 #include "fileloader.h"
+#include "kifloader.h"
 
 #include <QGridLayout>
 #include <QVBoxLayout>
@@ -150,7 +151,10 @@ void Widget::initialize(){
     textEditMain->append(tr("  --------------------------- HELLO! ---------------------------  \n"));
     connect(directoryComboBox, SIGNAL(editTextChanged(QString)), this, SLOT(find()));
     find();
-    afac++;
+
+    player = PPlayer(new Player(this));
+    connect(this, SIGNAL(kifProcessed(QStringList)), player.data(), SLOT(updateKif(QStringList)));
+
 }
 
 /**
@@ -195,7 +199,7 @@ void Widget::initialize(){
 
 void Widget::openFileOfItem(int row, int /* column */)
 {
-    afac++;
+        afac++;
     tabWidget->setCurrentIndex(1);
     textEditStaticData->clear();
 
@@ -204,10 +208,11 @@ void Widget::openFileOfItem(int row, int /* column */)
     QString filename(currentDir.absoluteFilePath(item->text()));
 
 
-    FileLoader *fileLoader = new FileLoader(this, filename);
-    connect(fileLoader, &FileLoader::lineProcessed, textEditStaticData, &QTextEdit::append);
-    connect(fileLoader, &FileLoader::finished, fileLoader, &QObject::deleteLater);
-    fileLoader->start();
+    KifLoader *kifLoader = new KifLoader(this, filename);
+    connect(kifLoader, &KifLoader::lineProcessed, textEditStaticData, &QTextEdit::append);
+    connect(kifLoader, &KifLoader::finished, kifLoader, &QObject::deleteLater);
+    connect(kifLoader, SIGNAL(kifProcessed(QStringList)),this, SIGNAL(kifProcessed(QStringList)));
+    kifLoader->start();
 
     QTextCursor cursor = textEditStaticData->textCursor();
     cursor.setPosition(0);
@@ -283,6 +288,6 @@ void Widget::showFiles(const QStringList &files)
     filesFoundLabel->setWordWrap(true);
 }
 
-void Widget::appendFile(QString & string){
-    textEditStaticData->append(string);
+void Widget::output(const QString & string){
+    textEditMain->append(string);
 }

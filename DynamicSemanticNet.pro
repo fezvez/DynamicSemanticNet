@@ -13,9 +13,15 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         widget.cpp \
-    fileloader.cpp
+    fileloader.cpp \
+    kifloader.cpp \
+    dynamicsemanticnet.cpp \
+    player.cpp
 
 HEADERS  += widget.h \
-    fileloader.h
+    fileloader.h \
+    kifloader.h \
+    dynamicsemanticnet.h \
+    player.h
 
 FORMS    += widget.ui
