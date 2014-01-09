@@ -155,51 +155,16 @@ void Widget::initialize(){
     player = PPlayer(new Player(this));
     connect(this, SIGNAL(kifProcessed(QStringList)), player.data(), SLOT(updateKif(QStringList)));
 
+    regEndsInKif = QRegExp("\\.kif$");
 }
 
 /**
  * FILE LOGIC
  */
 
-//void Widget::openFileOfItem(int row, int /* column */)
-//{
-//    tabWidget->setCurrentIndex(1);
-//    textEditStaticData->clear();
-
-//    QTableWidgetItem *item = filesTable->item(row, 0);
-//    //QDesktopServices::openUrl(QUrl::fromLocalFile(currentDir.absoluteFilePath(item->text())));
-//    QFile file(currentDir.absoluteFilePath(item->text()));
-
-
-//    if (file.open(QIODevice::ReadOnly)) {
-//        QString line;
-//        QTextStream in(&file);
-//        //qint64 size = QFileInfo(file).size();
-//        int maxCharDisplayed = 1 << 18;
-//        int nbCharDisplayed = 0;
-
-//        while (!in.atEnd() && (nbCharDisplayed<maxCharDisplayed)) {
-//            line = in.readLine();
-//            if((nbCharDisplayed+line.size())>=maxCharDisplayed){
-//                line.truncate(maxCharDisplayed-nbCharDisplayed);
-//            }
-//            textEditStaticData->append(line);
-//            nbCharDisplayed += (line.size() + 1);
-//        }
-//        qDebug() << nbCharDisplayed << '\t' << maxCharDisplayed;
-//        if(nbCharDisplayed>=maxCharDisplayed){
-//            qDebug() << "Truncated file";
-//        }
-//    }
-
-//    QTextCursor cursor = textEditStaticData->textCursor();
-//    cursor.setPosition(0);
-//    textEditStaticData->setTextCursor(cursor);
-//}
-
 void Widget::openFileOfItem(int row, int /* column */)
 {
-        afac++;
+    afac++;
     tabWidget->setCurrentIndex(1);
     textEditStaticData->clear();
 
@@ -207,12 +172,23 @@ void Widget::openFileOfItem(int row, int /* column */)
     //QDesktopServices::openUrl(QUrl::fromLocalFile(currentDir.absoluteFilePath(item->text())));
     QString filename(currentDir.absoluteFilePath(item->text()));
 
-
-    KifLoader *kifLoader = new KifLoader(this, filename);
-    connect(kifLoader, &KifLoader::lineProcessed, textEditStaticData, &QTextEdit::append);
-    connect(kifLoader, &KifLoader::finished, kifLoader, &QObject::deleteLater);
-    connect(kifLoader, SIGNAL(kifProcessed(QStringList)),this, SIGNAL(kifProcessed(QStringList)));
-    kifLoader->start();
+    qDebug() << filename;
+    if(filename.contains(regEndsInKif)){
+        // Amusing, no RAII here
+        // It seems dangerous, but I should read more about RAII and threads
+        KifLoader *kifLoader = new KifLoader(this, filename);
+        connect(kifLoader, &KifLoader::lineProcessed, textEditStaticData, &QTextEdit::append);
+        connect(kifLoader, &KifLoader::finished, kifLoader, &QObject::deleteLater);
+        connect(kifLoader, &KifLoader::finished, this, &Widget::ping);
+        connect(kifLoader, SIGNAL(kifProcessed(QStringList)),this, SIGNAL(kifProcessed(QStringList)));
+        kifLoader->start();
+    }
+    else{
+        FileLoader *fileLoader = new FileLoader(this, filename);
+        connect(fileLoader, &FileLoader::lineProcessed, textEditStaticData, &QTextEdit::append);
+        connect(fileLoader, &FileLoader::finished, fileLoader, &QObject::deleteLater);
+        fileLoader->start();
+    }
 
     QTextCursor cursor = textEditStaticData->textCursor();
     cursor.setPosition(0);
@@ -290,4 +266,8 @@ void Widget::showFiles(const QStringList &files)
 
 void Widget::output(const QString & string){
     textEditMain->append(string);
+}
+
+void Widget::ping(){
+    textEditMain->append("Ping");
 }

@@ -13,6 +13,7 @@
 
 #include <QSharedPointer>
 #include <QDir>
+#include <QRegExp>
 
 #include "player.h"
 
@@ -35,6 +36,7 @@ signals:
 
 public slots:
     void output(const QString &string);
+    void ping();
 
 
 private slots:
@@ -67,6 +69,7 @@ private:
     QTableWidget *filesTable;
 
     QDir currentDir;
+    QRegExp regEndsInKif;
 
     QLabel *labelTopMenu;
 

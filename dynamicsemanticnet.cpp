@@ -1,5 +1,6 @@
 #include "dynamicsemanticnet.h"
 
-DynamicSemanticNet::DynamicSemanticNet()
+DynamicSemanticNet::DynamicSemanticNet(QObject *parent) :
+    QObject(parent)
 {
 }
