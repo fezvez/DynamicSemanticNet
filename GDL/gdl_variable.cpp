@@ -6,10 +6,6 @@ GDL_Variable::GDL_Variable(const QString & s)
 }
 
 
-QString& GDL_Variable::toString(){
-    return name;
-}
-
-bool GDL_Variable::isGround(){
+bool GDL_Variable::isGround() const{
     return false;
 }

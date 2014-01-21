@@ -2,24 +2,25 @@
 
 #include <QStringBuilder>
 
-GDL_FunctionalTerm::GDL_FunctionalTerm(GDL_Constant & f, vector<GDL_Term> & b)
+GDL_FunctionalTerm::GDL_FunctionalTerm(const GDL_Constant & function, QVector<PTerm> body):
+    functionName(function)
 {
-    functionName = GDL_Constant(f);
-    functionBody = b;
-    isGround = UNDEFINED;
-    name = QString();
+    functionBody = body;
+    ground = UNDEFINED;
+    buildName();
 }
 
-QString& GDL_FunctionalTerm::toString(){
-    if(name.isEmpty()){
-
+bool GDL_FunctionalTerm::isGround() const{
+    if(!functionName.isGround())
+        return false;
+    for(PTerm term : functionBody)
+    {
+        if(!term->isGround())
+            return false;
     }
-    else{
-
-    }
+    return true;
 }
 
-bool GDL_FunctionalTerm::isGround(){
+void GDL_FunctionalTerm::buildName(){
 
 }
-

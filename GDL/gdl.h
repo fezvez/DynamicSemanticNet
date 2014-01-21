@@ -6,8 +6,11 @@
 class GDL
 {
 public:
-    QString& toString() = 0;
-    bool isGround() = 0;
+    QString toString() const;
+    virtual bool isGround() const = 0;
+
+protected:
+    QString name;
 };
 
 #endif // GDL_H

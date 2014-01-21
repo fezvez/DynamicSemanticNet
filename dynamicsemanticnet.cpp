@@ -3,4 +3,5 @@
 DynamicSemanticNet::DynamicSemanticNet(QObject *parent) :
     QObject(parent)
 {
+
 }

@@ -1,14 +1,10 @@
 #include "gdl_constant.h"
 
-GDL_Constant::GDL_Constant(const QString & s):
+GDL_Constant::GDL_Constant(const GDL_Constant &constant)
 {
-    name = QString(s);
+    name = QString(constant.toString());
 }
 
-QString& GDL_Constant::toString(){
-    return name;
-}
-
-bool GDL_Constant::isGround(){
+bool GDL_Constant::isGround() const{
     return true;
 }

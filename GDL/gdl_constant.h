@@ -9,9 +9,9 @@ class GDL_Constant : public GDL_Term
 {
 public:
     GDL_Constant(const QString & s);
+    GDL_Constant(const GDL_Constant & constant);
 
-    QString& toString();
-    bool isGround();
+    bool isGround() const;
 
 
 };

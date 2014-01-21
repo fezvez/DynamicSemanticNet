@@ -14,6 +14,8 @@ class GDL_Rule : public GDL
 public:
     GDL_Rule();
 
+    bool isGround() const;
+
 private:
     GDL_RelationalSentence head;
     vector<GDL_Sentence> body;

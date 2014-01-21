@@ -8,8 +8,7 @@ class GDL_Variable : public GDL_Term
 public:
     GDL_Variable(const QString & s);
 
-    QString& toString();
-    bool isGround();
+    bool isGround() const;
 
 
 };

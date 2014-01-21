@@ -5,22 +5,27 @@
 #include "gdl_constant.h"
 #include "../Trilogic.h"
 
-#include <vector>
+#include <QVector>
+#include <QSharedPointer>
 
 using namespace std;
+
+typedef QSharedPointer<GDL_Term> PTerm;
 
 class GDL_FunctionalTerm : public GDL_Term
 {
 public:
-    GDL_FunctionalTerm(GDL_Constant & f, vector<GDL_Term> & b);
+    GDL_FunctionalTerm(const GDL_Constant &function, QVector<PTerm> body);
 
-    QString& toString();
-    bool isGround();
+    bool isGround() const;
+
+private:
+    void buildName();
 
 private:
     GDL_Constant functionName;
-    vector<GDL_Term> functionBody;
-    TRILOGIC isGround;
+    QVector<PTerm> functionBody;
+    TRILOGIC ground;
 };
 
 #endif // GDL_FUNCTIONALTERM_H
