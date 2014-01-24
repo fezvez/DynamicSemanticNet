@@ -141,7 +141,7 @@ void Widget::createMainDisplay(){
     tabWidget->addTab(textEditStaticData, tr("File"));
     tabWidget->addTab(textEditDebug, tr("Debug"));
 
-    tabWidget->setMinimumSize(600, 360);
+    tabWidget->setMinimumSize(640, 360);
 }
 
 /**
@@ -153,7 +153,12 @@ void Widget::initialize(){
     find();
 
     player = PPlayer(new Player(this));
-    connect(this, SIGNAL(kifProcessed(QStringList)), player.data(), SLOT(updateKif(QStringList)));
+    propnet = PPropNet(new PropNet(this));
+    //connect(this, SIGNAL(kifProcessed(QStringList)), player.data(), SLOT(updateKif(QStringList)));
+    connect(this, SIGNAL(kifProcessed(QStringList)), propnet.data(), SLOT(loadKif(QStringList)));
+    connect(propnet.data(), SIGNAL(output(QString)), textEditMain, SLOT(append(QString)));
+    connect(propnet.data(), SIGNAL(outputDebug(QString)), textEditDebug, SLOT(append(QString)));
+
 
     regEndsInKif = QRegExp("\\.kif$");
 }

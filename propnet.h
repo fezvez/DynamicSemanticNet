@@ -1,5 +1,5 @@
-#ifndef PLAYER_H
-#define PLAYER_H
+#ifndef PROPNET_H
+#define PROPNET_H
 
 #include "GDL/gdl.h"
 #include "GDL/gdl_constant.h"
@@ -23,14 +23,23 @@ typedef QSharedPointer<GDL_RelationalSentence> PRelation;
 typedef QSharedPointer<GDL_FunctionalTerm> PFunction;
 typedef QSharedPointer<GDL_NotSentence> PNotSentence;
 
-class Player : public QObject
+class PropNet : public QObject
 {
     Q_OBJECT
 public:
-    Player(QObject *parent);
+    PropNet(QObject * parent = 0);
 
 public slots:
-    void updateKif(const QStringList &sl);
+    void loadKif(const QStringList &sl);
+
+private:
+    void cleanFile();
+    void generateHerbrand();
+    void generatePropNet();
+
+signals:
+    void output(const QString & message);
+    void outputDebug(const QString & message);
 
 private:
     void processKifLine(QString line);
@@ -56,4 +65,4 @@ private:
     QRegExp rightPar;
 };
 
-#endif // PLAYER_H
+#endif // PROPNET_H

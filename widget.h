@@ -16,8 +16,10 @@
 #include <QRegExp>
 
 #include "player.h"
+#include "propnet.h"
 
 typedef QSharedPointer<Player> PPlayer;
+typedef QSharedPointer<PropNet> PPropNet;
 
 namespace Ui {
 class Widget;
@@ -81,6 +83,7 @@ private:
 
 private:
     PPlayer player;
+    PPropNet propnet;
 
 private:
     void setUpLayout();

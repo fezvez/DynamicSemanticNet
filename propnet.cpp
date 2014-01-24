@@ -1,4 +1,4 @@
-#include "player.h"
+#include "propnet.h"
 
 
 #include <QDebug>
@@ -7,7 +7,7 @@
 
 
 
-Player::Player(QObject *parent):
+PropNet::PropNet(QObject *parent):
     QObject(parent)
 {
     ruleRegExp = QRegExp("<=");
@@ -18,16 +18,25 @@ Player::Player(QObject *parent):
 
 }
 
-void Player::updateKif(const QStringList & sl){
+void PropNet::loadKif(const QStringList & sl){
+    // Load file
     rawKif = QStringList(sl);
 
-    qDebug() << "Kif processed in Player!";
+    cleanFile();
+    generateHerbrand();
+    generatePropNet();
+}
+
+void PropNet::cleanFile(){
+    qDebug() << "Kif loaded in PropNet!";
     qDebug() << "Printing kif";
 
     for(int i=0; i<rawKif.size(); ++i){
         qDebug() << rawKif[i];
     }
 
+
+    // Clean file
     QString currentLine;
     bool isLineContinuation = false;
     int nbParenthesis, nbLeftParenthesis, nbRightParenthesis;
@@ -58,20 +67,32 @@ void Player::updateKif(const QStringList & sl){
         }
     }
 
-    qDebug() << "Kif processed in Player!";
+    qDebug() << "Kif processed in PropNet!";
     qDebug() << "Printing kif";
     for(int i=0; i<lineKif.size(); ++i){
         qDebug() << lineKif[i];
     }
 
+    emit output(QString("Kif loaded and cleaned"));
+}
+
+void PropNet::generateHerbrand(){
+
+
     for(int i=0; i<lineKif.size(); ++i){
         qDebug() << "\nProcessing line " << lineKif[i];
         processKifLine(lineKif[i]);
     }
+
+    emit output(QString("Herbrand generated"));
+}
+
+void PropNet::generatePropNet(){
+
 }
 
 
-void Player::processKifLine(QString line){
+void PropNet::processKifLine(QString line){
     if(line.contains(ruleRegExp)){
         processRule(line);
     }
@@ -82,7 +103,7 @@ void Player::processKifLine(QString line){
 
 
 
-PRule Player::processRule(QString line){
+PRule PropNet::processRule(QString line){
     qDebug() << "Rule " << line;
 
     QStringList splitLine = split(line);
@@ -99,7 +120,7 @@ PRule Player::processRule(QString line){
     return PRule(new GDL_Rule(head, body));
 }
 
-PSentence Player::processSentence(QString line){
+PSentence PropNet::processSentence(QString line){
     qDebug() << "Sentence " << line;
 
     QStringList splitLine = split(line);
@@ -119,7 +140,7 @@ PSentence Player::processSentence(QString line){
     }
 }
 
-PRelation Player::processRelation(QString line){
+PRelation PropNet::processRelation(QString line){
     qDebug() << "Relational sentence " << line;
 
     QStringList splitLine = split(line);
@@ -153,7 +174,7 @@ PRelation Player::processRelation(QString line){
     return PRelation(new GDL_RelationalSentence(head, body));
 }
 
-PTerm Player::processTerm(QString line){
+PTerm PropNet::processTerm(QString line){
     qDebug() << "Term " << line;
     QStringList splitLine = split(line);
 
@@ -173,7 +194,7 @@ PTerm Player::processTerm(QString line){
     }
 }
 
-PFunction Player::processFunction(QString line){
+PFunction PropNet::processFunction(QString line){
     qDebug() << "Function " << line;
     QStringList splitLine = split(line);
 
@@ -189,7 +210,7 @@ PFunction Player::processFunction(QString line){
 }
 
 
-QStringList Player::split(QString line){
+QStringList PropNet::split(QString line){
     QStringList answer;
     QString currentPart;
 

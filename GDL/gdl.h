@@ -9,6 +9,8 @@ public:
     QString toString() const;
     virtual bool isGround() const = 0;
 
+    virtual ~GDL();
+
 protected:
     QString name;
 };

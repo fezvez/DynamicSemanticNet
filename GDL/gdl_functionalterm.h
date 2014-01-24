@@ -11,11 +11,12 @@
 using namespace std;
 
 typedef QSharedPointer<GDL_Term> PTerm;
+typedef QSharedPointer<GDL_Constant> PConstant;
 
 class GDL_FunctionalTerm : public GDL_Term
 {
 public:
-    GDL_FunctionalTerm(const GDL_Constant &function, QVector<PTerm> body);
+    GDL_FunctionalTerm(PConstant function, QVector<PTerm> body);
 
     bool isGround() const;
 
@@ -23,9 +24,9 @@ private:
     void buildName();
 
 private:
-    GDL_Constant functionName;
+    PConstant functionName;
     QVector<PTerm> functionBody;
-    TRILOGIC ground;
+
 };
 
 #endif // GDL_FUNCTIONALTERM_H

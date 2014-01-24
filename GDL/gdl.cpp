@@ -3,3 +3,7 @@
 QString GDL::toString() const{
     return name;
 }
+
+GDL::~GDL(){
+
+}

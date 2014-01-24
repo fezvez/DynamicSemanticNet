@@ -2,17 +2,14 @@
 
 #include <QStringBuilder>
 
-GDL_FunctionalTerm::GDL_FunctionalTerm(const GDL_Constant & function, QVector<PTerm> body):
+GDL_FunctionalTerm::GDL_FunctionalTerm(PConstant function, QVector<PTerm> body):
     functionName(function)
 {
     functionBody = body;
-    ground = UNDEFINED;
     buildName();
 }
 
 bool GDL_FunctionalTerm::isGround() const{
-    if(!functionName.isGround())
-        return false;
     for(PTerm term : functionBody)
     {
         if(!term->isGround())
