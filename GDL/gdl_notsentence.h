@@ -5,7 +5,8 @@
 
 #include <QSharedPointer>
 
-typedef QSharedPointer<GDL_Sentence> PSentence;
+class GDL_NotSentence;
+typedef QSharedPointer<GDL_NotSentence> PNotSentence;
 
 class GDL_NotSentence : public GDL_Sentence
 {

@@ -10,22 +10,23 @@
 
 using namespace std;
 
-typedef QSharedPointer<GDL_Term> PTerm;
-typedef QSharedPointer<GDL_Constant> PConstant;
+class GDL_FunctionalTerm;
+typedef QSharedPointer<GDL_FunctionalTerm> PFunction;
 
 class GDL_FunctionalTerm : public GDL_Term
 {
 public:
-    GDL_FunctionalTerm(PConstant function, QVector<PTerm> body);
+    GDL_FunctionalTerm(PConstant h, QVector<PTerm> b);
 
     bool isGround() const;
+    bool operator==(const GDL_Term & t);
 
 private:
     void buildName();
 
 private:
-    PConstant functionName;
-    QVector<PTerm> functionBody;
+    PConstant head;
+    QVector<PTerm> body;
 
 };
 

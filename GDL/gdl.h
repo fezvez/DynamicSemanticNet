@@ -2,6 +2,10 @@
 #define GDL_H
 
 #include <QString>
+#include <QSharedPointer>
+
+class GDL;
+typedef QSharedPointer<GDL> PGDL;
 
 class GDL
 {

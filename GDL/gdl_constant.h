@@ -3,7 +3,8 @@
 
 #include "gdl_term.h"
 
-#include <QString>
+class GDL_Constant;
+typedef QSharedPointer<GDL_Constant> PConstant;
 
 class GDL_Constant : public GDL_Term
 {
@@ -12,8 +13,7 @@ public:
     GDL_Constant(const GDL_Constant & constant);
 
     bool isGround() const;
-
-
+    bool operator==(const GDL_Term & t);
 };
 
 #endif // GDL_CONSTANT_H

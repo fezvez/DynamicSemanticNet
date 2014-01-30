@@ -5,6 +5,7 @@
 #include "GDL/gdl_constant.h"
 #include "GDL/gdl_variable.h"
 #include "GDL/gdl_relationalsentence.h"
+#include "GDL/gdl_distinctsentence.h"
 #include "GDL/gdl_rule.h"
 #include "GDL/gdl_functionalterm.h"
 #include "GDL/gdl_notsentence.h"
@@ -15,13 +16,10 @@
 #include <QStringList>
 #include <QVector>
 #include <QSharedPointer>
+#include <QMap>
+#include <QSet>
 
-typedef QSharedPointer<GDL> PGDL;
-typedef QSharedPointer<GDL_Rule> PRule;
-typedef QSharedPointer<GDL_Sentence> PSentence;
-typedef QSharedPointer<GDL_RelationalSentence> PRelation;
-typedef QSharedPointer<GDL_FunctionalTerm> PFunction;
-typedef QSharedPointer<GDL_NotSentence> PNotSentence;
+
 
 class PropNet : public QObject
 {
@@ -53,7 +51,22 @@ private:
     QStringList split(QString line);
 
 private:
+
+    QVector<PRule> ruleList;
+    QVector<PRelation> relationList;
+
+    QMap<QString, QVector<PRelation>> relationMap;
+
     QVector<PGDL> gdlList;
+    QVector<PSentence> sentenceList;
+    QVector<PConstant> constantList;
+
+
+    QSet<PConstant> objectConstantSet;
+    QSet<PConstant> functionConstantSet;
+    QSet<PConstant> relationConstantSet;
+
+    QMap<QString, PConstant> constantMap;
 
     QStringList rawKif;
     QStringList lineKif;

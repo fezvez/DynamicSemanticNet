@@ -3,12 +3,14 @@
 
 #include "gdl.h"
 
-#include <QString>
+class GDL_Sentence;
+typedef QSharedPointer<GDL_Sentence> PSentence;
 
 class GDL_Sentence : public GDL
 {
 public:
     bool isGround() const = 0;
+
 };
 
 #endif // GDL_SENTENCE_H

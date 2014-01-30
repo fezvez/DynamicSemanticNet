@@ -4,19 +4,21 @@
 #include "gdl_sentence.h"
 
 #include <QSharedPointer>
+#include <QVector>
 
-typedef QSharedPointer<GDL_Sentence> PSentence;
+class GDL_OrSentence;
+typedef QSharedPointer<GDL_OrSentence> POrSentence;
 
 class GDL_OrSentence : public GDL_Sentence
 {
 public:
-    GDL_OrSentence(PSentence s);
+    GDL_OrSentence(QVector<PSentence> b);
 
     bool isGround() const;
 
 
 private:
-    PSentence sentence;
+    QVector<PSentence> body;
 };
 
 #endif // GDL_ORSENTENCE_H

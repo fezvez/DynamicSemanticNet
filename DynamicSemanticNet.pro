@@ -9,7 +9,7 @@ QT       += core gui widgets
 TARGET = DynamicSemanticNet
 TEMPLATE = app
 
-QMAKE_CXXFLAGS += -mmacosx-version-min=10.7 -std=gnu0x -stdlib=libc+
+#QMAKE_CXXFLAGS += -mmacosx-version-min=10.7 -std=gnu0x -stdlib=libc+
 CONFIG += c++11
 
 SOURCES += main.cpp\
@@ -28,7 +28,8 @@ SOURCES += main.cpp\
     GDL/gdl_notsentence.cpp \
     GDL/gdl_orsentence.cpp \
     GDL/gdl_rule.cpp \
-    propnet.cpp
+    propnet.cpp \
+    GDL/gdl_distinctsentence.cpp
 
 HEADERS  += widget.h \
     fileloader.h \
@@ -47,6 +48,7 @@ HEADERS  += widget.h \
     GDL/gdl_orsentence.h \
     GDL/gdl_rule.h \
     Trilogic.h \
-    propnet.h
+    propnet.h \
+    GDL/gdl_distinctsentence.h
 
 FORMS    += widget.ui

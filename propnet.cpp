@@ -80,7 +80,7 @@ void PropNet::generateHerbrand(){
 
 
     for(int i=0; i<lineKif.size(); ++i){
-        qDebug() << "\nProcessing line " << lineKif[i];
+        qDebug() << "\n\nProcessing line " << lineKif[i];
         processKifLine(lineKif[i]);
     }
 
@@ -88,16 +88,43 @@ void PropNet::generateHerbrand(){
 }
 
 void PropNet::generatePropNet(){
+    for(PRelation relation : relationList){
+        if(relation->isGround()){
+            qDebug() << "Relation " << relation->toString() << " is ground";
+        }
+        else{
+            // I think this should not happen
+            qDebug() << "Relation " << relation->toString() << " is NOT ground";
+        }
+    }
 
+    for(PRule rule : ruleList){
+        if(rule->isGround()){
+            qDebug() << "Rule " << rule->toString() << " is ground";
+        }
+        else{
+            qDebug() << "Rule " << rule->toString() << " is not ground";
+        }
+    }
+
+    for(PConstant constant : objectConstantSet){
+        qDebug() << "Object constant : " << constant->toString();
+    }
+    for(PConstant constant : relationConstantSet){
+        qDebug() << "Relation constant : " << constant->toString();
+    }
+    for(PConstant constant : functionConstantSet){
+        qDebug() << "Function constant : " << constant->toString();
+    }
 }
 
 
 void PropNet::processKifLine(QString line){
     if(line.contains(ruleRegExp)){
-        processRule(line);
+        ruleList.append(processRule(line));
     }
     else{
-        processRelation(line);
+        relationList.append(processRelation(line));
     }
 }
 
@@ -126,6 +153,12 @@ PSentence PropNet::processSentence(QString line){
     QStringList splitLine = split(line);
     if(splitLine[0] == QString("distinct")){
         qDebug() << "Sentence is DISTINCT sentence";
+
+        Q_ASSERT(splitLine.size() == 3);
+        PTerm term1 = processTerm(splitLine[1]);
+        PTerm term2 = processTerm(splitLine[2]);
+        PDistinctSentence distinctSentence = PDistinctSentence(new GDL_DistinctSentence(term1, term2));
+        return qSharedPointerCast<GDL_Sentence>(distinctSentence);
     }
     else if(splitLine[0] == QString("not")){
         qDebug() << "Sentence is NOT sentence";
@@ -147,27 +180,35 @@ PRelation PropNet::processRelation(QString line){
 
     qDebug() << "Relation constant is : " << splitLine[0];
     PConstant head = PConstant(new GDL_Constant(splitLine[0]));
+    QString relationConstant = head->toString();
+    if(!constantMap.contains(relationConstant)){
+        constantMap.insert(relationConstant, head);
+        relationConstantSet.insert(head);
+        head = constantMap[relationConstant];
+    }
+
     QVector<PTerm> body;
 
     if(splitLine[0] == QString("base")
             || splitLine[0] == QString("init")
             || splitLine[0] == QString("next")
             || splitLine[0] == QString("true")){
-            Q_ASSERT(splitLine.size() == 2);
-            PRelation relation = processRelation(splitLine[1]);
-            //PRelation t= qSharedPointerCast<GDL_RelationalSentence>(relation);
-            return relation;
+        Q_ASSERT(splitLine.size() == 2);
+        PRelation relation = processRelation(splitLine[1]);
+        // Do a little something here
+        //PRelation t= qSharedPointerCast<GDL_RelationalSentence>(relation);
+        return relation;
     }
     else if(splitLine[0] == QString("input")
             || splitLine[0] == QString("legal")
             || splitLine[0] == QString("does")) {
         Q_ASSERT(splitLine.size() == 3);
-        body.append(qSharedPointerCast<GDL_Term>(processTerm(splitLine[1])));
-        body.append(qSharedPointerCast<GDL_Term>(processTerm(splitLine[2])));
+        body.append(processTerm(splitLine[1]));
+        body.append(processTerm(splitLine[2]));
     }
     else {
         for(int i = 1; i<splitLine.size(); ++i){
-            body.append(qSharedPointerCast<GDL_Term>(processTerm(splitLine[i])));
+            body.append(processTerm(splitLine[i]));
         }
     }
 
@@ -185,7 +226,14 @@ PTerm PropNet::processTerm(QString line){
         }
         else{
             qDebug() << "Constant " << splitLine[0];
-            return PTerm(new GDL_Constant(splitLine[0]));
+            PConstant constant = PConstant(new GDL_Constant(splitLine[0]));
+            QString objectConstant = constant->toString();
+            if(!constantMap.contains(objectConstant)){
+                constantMap.insert(objectConstant, constant);
+                objectConstantSet.insert(constant);
+                constant = constantMap[objectConstant];
+            }
+            return PTerm(constant);
         }
     }
     else{
@@ -199,6 +247,13 @@ PFunction PropNet::processFunction(QString line){
     QStringList splitLine = split(line);
 
     PConstant function = PConstant(new GDL_Constant(splitLine[0]));
+    QString functionConstant = function->toString();
+    if(!constantMap.contains(functionConstant)){
+        constantMap.insert(functionConstant, function);
+        functionConstantSet.insert(function);
+        function = constantMap[functionConstant];
+    }
+
 
     QVector<PTerm> body;
     for(int i = 0; i<splitLine.size(); ++i){
@@ -254,9 +309,9 @@ QStringList PropNet::split(QString line){
         }
     }
 
-//    for(int i = 0; i<answer.size(); ++i){
-//        qDebug() << "Split : " << answer[i];
-//    }
+    //    for(int i = 0; i<answer.size(); ++i){
+    //        qDebug() << "Split : " << answer[i];
+    //    }
 
     return answer;
 }
