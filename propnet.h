@@ -55,6 +55,13 @@ private:
     QVector<PRule> ruleList;
     QVector<PRelation> relationList;
 
+
+    QSet<PConstant> objectConstantSet;
+    QSet<PConstant> functionConstantSet;
+    QSet<PConstant> relationConstantSet;
+    QMap<QString, PConstant> constantMap;
+
+
     QMap<QString, QVector<PRelation>> relationMap;
 
     QVector<PGDL> gdlList;
@@ -62,11 +69,7 @@ private:
     QVector<PConstant> constantList;
 
 
-    QSet<PConstant> objectConstantSet;
-    QSet<PConstant> functionConstantSet;
-    QSet<PConstant> relationConstantSet;
 
-    QMap<QString, PConstant> constantMap;
 
     QStringList rawKif;
     QStringList lineKif;
