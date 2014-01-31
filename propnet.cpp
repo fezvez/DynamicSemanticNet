@@ -116,6 +116,10 @@ void PropNet::generatePropNet(){
     for(PConstant constant : functionConstantSet){
         qDebug() << "Function constant : " << constant->toString();
     }
+
+
+
+
 }
 
 
@@ -190,9 +194,9 @@ PRelation PropNet::processRelation(QString line){
     QVector<PTerm> body;
 
     if(splitLine[0] == QString("base")
-            || splitLine[0] == QString("init")
-            || splitLine[0] == QString("next")
-            || splitLine[0] == QString("true")){
+    || splitLine[0] == QString("init")
+    || splitLine[0] == QString("next")
+    || splitLine[0] == QString("true")){
         Q_ASSERT(splitLine.size() == 2);
         PRelation relation = processRelation(splitLine[1]);
         // Do a little something here

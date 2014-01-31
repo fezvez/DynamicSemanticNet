@@ -17,6 +17,8 @@ public:
 
     bool isGround() const;
 
+    PConstant getRelation();
+
 private:
     void buildName();
 

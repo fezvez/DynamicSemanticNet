@@ -38,3 +38,7 @@ void GDL_RelationalSentence::buildName(){
     }
     name = name + ")";
 }
+
+PConstant GDL_RelationalSentence::getRelation(){
+    return head;
+}
