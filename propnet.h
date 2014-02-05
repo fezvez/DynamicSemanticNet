@@ -43,7 +43,7 @@ private:
     void processKifLine(QString line);
     PRule processRule(QString line);
     PSentence processSentence(QString line);
-    PRelation processRelation(QString line);
+    PRelation processRelation(QString line, GDL::GDL_TYPE type = GDL::NONE);
     PTerm processTerm(QString line);
     PFunction processFunction(QString line);
 

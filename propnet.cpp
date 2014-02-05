@@ -96,6 +96,7 @@ void PropNet::generatePropNet(){
             // I think this should not happen
             qDebug() << "Relation " << relation->toString() << " is NOT ground";
         }
+        qDebug() << "Relation is of type : " << GDL::getStringFromGDLType(relation->getType());
     }
 
     for(PRule rule : ruleList){
@@ -177,7 +178,7 @@ PSentence PropNet::processSentence(QString line){
     }
 }
 
-PRelation PropNet::processRelation(QString line){
+PRelation PropNet::processRelation(QString line, GDL::GDL_TYPE type){
     qDebug() << "Relational sentence " << line;
 
     QStringList splitLine = split(line);
@@ -192,13 +193,14 @@ PRelation PropNet::processRelation(QString line){
     }
 
     QVector<PTerm> body;
+    GDL::GDL_TYPE subtype = GDL::getGDLTypeFromString(splitLine[0]);
 
     if(splitLine[0] == QString("base")
     || splitLine[0] == QString("init")
     || splitLine[0] == QString("next")
     || splitLine[0] == QString("true")){
         Q_ASSERT(splitLine.size() == 2);
-        PRelation relation = processRelation(splitLine[1]);
+        PRelation relation = processRelation(splitLine[1], subtype);
         // Do a little something here
         //PRelation t= qSharedPointerCast<GDL_RelationalSentence>(relation);
         return relation;
@@ -216,7 +218,10 @@ PRelation PropNet::processRelation(QString line){
         }
     }
 
-    return PRelation(new GDL_RelationalSentence(head, body));
+    if(type == GDL::NONE){
+        return PRelation(new GDL_RelationalSentence(head, body, subtype));
+    }
+    return PRelation(new GDL_RelationalSentence(head, body, type));
 }
 
 PTerm PropNet::processTerm(QString line){

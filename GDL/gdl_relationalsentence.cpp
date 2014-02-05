@@ -2,9 +2,10 @@
 
 #include <QDebug>
 
-GDL_RelationalSentence::GDL_RelationalSentence(PConstant h, QVector<PTerm> b):
+GDL_RelationalSentence::GDL_RelationalSentence(PConstant h, QVector<PTerm> b, GDL_TYPE t):
     head(h),
-    body(b)
+    body(b),
+    type(t)
 {
     buildName();
 }
@@ -41,4 +42,8 @@ void GDL_RelationalSentence::buildName(){
 
 PConstant GDL_RelationalSentence::getRelation(){
     return head;
+}
+
+GDL::GDL_TYPE GDL_RelationalSentence::getType(){
+    return type;
 }

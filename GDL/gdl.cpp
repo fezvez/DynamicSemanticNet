@@ -8,5 +8,6 @@ GDL::~GDL(){
 
 }
 
-QMap<QString, GDL_TYPE> GDL::mapGDLType = QMap<QString, GDL_TYPE>();
+QMap<QString, GDL::GDL_TYPE> GDL::mapString2GDLType = QMap<QString, GDL::GDL_TYPE>();
+QMap<GDL::GDL_TYPE, QString> GDL::mapGDLType2String = QMap<GDL::GDL_TYPE, QString>();
 

@@ -152,6 +152,7 @@ void Widget::initialize(){
     connect(directoryComboBox, SIGNAL(editTextChanged(QString)), this, SLOT(find()));
     find();
 
+    GDL::init();
     player = PPlayer(new Player(this));
     propnet = PPropNet(new PropNet(this));
     //connect(this, SIGNAL(kifProcessed(QStringList)), player.data(), SLOT(updateKif(QStringList)));
