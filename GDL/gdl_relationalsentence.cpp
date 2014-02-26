@@ -28,16 +28,29 @@ void GDL_RelationalSentence::buildName(){
         return;
     case 1:
         name = name + ' ' + body[0]->toString();
-        return;
+        break;
     default:
+        name = name + " (" + body[0]->toString();
+        for(int i=1; i<body.size(); ++i){
+            name = name + ", " + body[i]->toString();
+        }
+        name = name + ")";
         break;
     }
 
-    name = name + " (" + body[0]->toString();
-    for(int i=1; i<body.size(); ++i){
-        name = name + ", " + body[i]->toString();
+
+
+    if(type==GDL::BASE){
+        name = QString("base (") + name + ')';
     }
-    name = name + ")";
+
+    if(type==GDL::TRUE){
+        name = QString("true (") + name + ')';
+    }
+
+    if(type==GDL::INIT){
+        name = QString("init (") + name + ')';
+    }
 }
 
 PConstant GDL_RelationalSentence::getRelation(){

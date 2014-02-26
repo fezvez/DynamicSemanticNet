@@ -20,8 +20,11 @@ public:
         INIT,
         TRUE,
         NEXT,
+        DOES,
+        GOAL,
         LEGAL,
-        DOES
+        INPUT,
+        TERMINAL
     };
 
 
@@ -41,8 +44,11 @@ public:
         mapString2GDLType.insert(QString("init"), GDL_TYPE::INIT);
         mapString2GDLType.insert(QString("true"), GDL_TYPE::TRUE);
         mapString2GDLType.insert(QString("next"), GDL_TYPE::NEXT);
-        mapString2GDLType.insert(QString("legal"), GDL_TYPE::LEGAL);
         mapString2GDLType.insert(QString("does"), GDL_TYPE::DOES);
+        mapString2GDLType.insert(QString("goal"), GDL_TYPE::GOAL);
+        mapString2GDLType.insert(QString("legal"), GDL_TYPE::LEGAL);
+        mapString2GDLType.insert(QString("input"), GDL_TYPE::INPUT);
+        mapString2GDLType.insert(QString("terminal"), GDL_TYPE::TERMINAL);
 
         mapGDLType2String.clear();
         mapGDLType2String.insert(GDL_TYPE::NONE ,QString("none"));
@@ -51,8 +57,11 @@ public:
         mapGDLType2String.insert(GDL_TYPE::INIT ,QString("init"));
         mapGDLType2String.insert(GDL_TYPE::TRUE ,QString("true"));
         mapGDLType2String.insert(GDL_TYPE::NEXT ,QString("next"));
-        mapGDLType2String.insert(GDL_TYPE::LEGAL,QString("legal"));
         mapGDLType2String.insert(GDL_TYPE::DOES ,QString("does"));
+        mapGDLType2String.insert(GDL_TYPE::GOAL ,QString("goal"));
+        mapGDLType2String.insert(GDL_TYPE::LEGAL,QString("legal"));
+        mapGDLType2String.insert(GDL_TYPE::INPUT,QString("input"));
+        mapGDLType2String.insert(GDL_TYPE::TERMINAL,QString("terminal"));
     }
 
     static GDL_TYPE getGDLTypeFromString(const QString & s){

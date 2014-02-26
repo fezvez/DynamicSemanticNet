@@ -17,6 +17,7 @@ public:
     GDL_Rule(PRelation h, QVector<PSentence> b);
 
     bool isGround() const;
+    PRelation getHead();
 
 private:
     void buildName();

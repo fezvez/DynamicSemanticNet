@@ -19,13 +19,13 @@ bool GDL_Rule::isGround() const{
 }
 
 void GDL_Rule::buildName(){
-    name = head->toString();
+    name = QString("(<= ") + head->toString();
     switch(body.size()){
     case 0:
         qDebug() << "Rule with arity 0 : " << name;
         return;
     case 1:
-        name = name + ' ' + body[0]->toString();
+        name = name + ' ' + body[0]->toString() + ')';
         return;
     default:
         break;
@@ -33,7 +33,11 @@ void GDL_Rule::buildName(){
 
     name = name + " (" + body[0]->toString();
     for(int i=1; i<body.size(); ++i){
-        name = name + ", " + body[i]->toString();
+        name = name + ") (" + body[i]->toString();
     }
-    name = name + ")";
+    name = name + "))";
+}
+
+PRelation GDL_Rule::getHead(){
+    return head;
 }

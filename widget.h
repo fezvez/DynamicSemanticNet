@@ -17,9 +17,11 @@
 
 #include "player.h"
 #include "propnet.h"
+#include "herbrand.h"
 
 typedef QSharedPointer<Player> PPlayer;
 typedef QSharedPointer<PropNet> PPropNet;
+typedef QSharedPointer<Herbrand> PHerbrand;
 
 namespace Ui {
 class Widget;
@@ -84,6 +86,7 @@ private:
 private:
     PPlayer player;
     PPropNet propnet;
+    PHerbrand herbrand;
 
 private:
     void setUpLayout();
