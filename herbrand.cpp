@@ -117,6 +117,7 @@ void Herbrand::generateInformation(){
         qDebug() << "Function constant : " << constant->toString();
     }
 
+    qDebug() << "\n\n";
 
     mapTypeToRelationContainer.clear();
     mapTypeToRelationContainer.insert(GDL::BASE, baseRelations);
@@ -172,6 +173,9 @@ void Herbrand::generateInformation(){
     for(PRule rule : standardRules){
         qDebug() << "Rule of type standard\t: " << rule->toString();
     }
+
+
+    qDebug() << "\n\n";
 }
 
 
