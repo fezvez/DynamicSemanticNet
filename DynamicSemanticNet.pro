@@ -9,8 +9,8 @@ QT       += core gui widgets
 TARGET = DynamicSemanticNet
 TEMPLATE = app
 
-#QMAKE_CXXFLAGS += -mmacosx-version-min=10.7 -std=gnu0x -stdlib=libc+
 CONFIG += c++11
+QMAKE_CXXFLAGS += -mmacosx-version-min=10.7 -std=gnu0x -stdlib=libc+
 
 SOURCES += main.cpp\
         widget.cpp \
