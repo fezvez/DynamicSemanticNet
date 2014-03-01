@@ -123,6 +123,7 @@ void Herbrand::generateInformation(){
     mapTypeToRelationContainer.insert(GDL::BASE, baseRelations);
     mapTypeToRelationContainer.insert(GDL::INIT, initRelations);
     mapTypeToRelationContainer.insert(GDL::ROLE, roleRelations);
+    mapTypeToRelationContainer.insert(GDL::NONE, standardRelations);
 
     for(PRelation relation:relationList){
         GDL::GDL_TYPE type = relation->getType();
@@ -152,6 +153,7 @@ void Herbrand::generateInformation(){
     mapTypeToRuleContainer.insert(GDL::LEGAL, legalRules);
     mapTypeToRuleContainer.insert(GDL::INPUT, inputRules);
     mapTypeToRuleContainer.insert(GDL::TERMINAL, terminalRules);
+    mapTypeToRuleContainer.insert(GDL::NONE, standardRules);
 
     for(PRule rule:ruleList){
         GDL::GDL_TYPE type = rule->getHead()->getType();
@@ -249,8 +251,9 @@ PRelation Herbrand::processRelation(QString line, GDL::GDL_TYPE type){
     if(!constantMap.contains(relationConstant)){
         constantMap.insert(relationConstant, head);
         relationConstantSet.insert(head);
-        head = constantMap[relationConstant];
     }
+    head = constantMap[relationConstant];
+    qDebug() << "Relation constant adress is : " << head.data();
 
     QVector<PTerm> body;
     GDL::GDL_TYPE subtype = GDL::getGDLTypeFromString(splitLine[0]);
@@ -302,7 +305,7 @@ PTerm Herbrand::processTerm(QString line){
                 objectConstantSet.insert(constant);
                 constant = constantMap[objectConstant];
             }
-            return PTerm(constant);
+            return qSharedPointerCast<GDL_Term>(constant);
         }
     }
     else{

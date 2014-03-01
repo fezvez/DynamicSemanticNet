@@ -61,6 +61,7 @@ HEADERS  += widget.h \
     PropNet/propositionand.h \
     PropNet/propositionor.h \
     PropNet/propositionnot.h \
-    PropNet/propositionconstant.h
+    PropNet/propositionconstant.h \
+    GDL/gdl_tools.h
 
 FORMS    += widget.ui

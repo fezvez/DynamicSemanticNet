@@ -5,7 +5,7 @@ GDL_DistinctSentence::GDL_DistinctSentence(PTerm t1, PTerm t2):
     term2(t2)
 
 {
-    name = QString("distinct (") + t1->toString() + ", " + t2->toString() + ')';
+    name = QString("distinct (") + t1->toString() + " " + t2->toString() + ')';
 }
 
 

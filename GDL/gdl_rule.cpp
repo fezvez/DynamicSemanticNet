@@ -7,6 +7,16 @@ GDL_Rule::GDL_Rule(PRelation h, QVector<PSentence> b):
     body(b)
 {
     buildName();
+
+    qDebug() << "Building rule members";
+    for(PSentence s : b){
+        qDebug() << "Members : " << s->getChildConstants();
+        members = members.unite(s->getChildConstants());
+    }
+
+    for(PConstant c : members){
+        qDebug() << "Member " << c->toString() << "\tadress : " << c.data();
+    }
 }
 
 bool GDL_Rule::isGround() const{
@@ -40,4 +50,12 @@ void GDL_Rule::buildName(){
 
 PRelation GDL_Rule::getHead(){
     return head;
+}
+
+QVector<PSentence> GDL_Rule::getBody(){
+    return body;
+}
+
+QSet<PConstant> GDL_Rule::getMembers(){
+    return members;
 }

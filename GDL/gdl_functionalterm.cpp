@@ -33,7 +33,7 @@ void GDL_FunctionalTerm::buildName(){
 
     name = name + " (" + body[0]->toString();
     for(int i=1; i<body.size(); ++i){
-        name = name + ", " + body[i]->toString();
+        name = name + " " + body[i]->toString();
     }
     name = name + ")";
 }

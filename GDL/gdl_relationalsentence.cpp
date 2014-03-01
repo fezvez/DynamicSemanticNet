@@ -8,6 +8,14 @@ GDL_RelationalSentence::GDL_RelationalSentence(PConstant h, QVector<PTerm> b, GD
     type(t)
 {
     buildName();
+    childConstants.insert(h);
+}
+
+QString GDL_RelationalSentence::toString() const{
+    if(useRawNames){
+        return rawName;
+    }
+    return name;
 }
 
 bool GDL_RelationalSentence::isGround() const{
@@ -21,24 +29,24 @@ bool GDL_RelationalSentence::isGround() const{
 }
 
 void GDL_RelationalSentence::buildName(){
-    name = head->toString();
+    rawName = head->toString();
     switch(body.size()){
     case 0:
-        qDebug() << "Relation with arity 0 : " << name;
-        return;
+        qDebug() << "Relation with arity 0 : " << rawName;
+        break;
     case 1:
-        name = name + ' ' + body[0]->toString();
+        rawName = rawName + ' ' + body[0]->toString();
         break;
     default:
-        name = name + " (" + body[0]->toString();
+        rawName = rawName + " (" + body[0]->toString();
         for(int i=1; i<body.size(); ++i){
-            name = name + ", " + body[i]->toString();
+            rawName = rawName + " " + body[i]->toString();
         }
-        name = name + ")";
+        rawName = rawName + ")";
         break;
     }
 
-
+    name = rawName;
 
     if(type==GDL::BASE){
         name = QString("base (") + name + ')';
@@ -51,12 +59,18 @@ void GDL_RelationalSentence::buildName(){
     if(type==GDL::INIT){
         name = QString("init (") + name + ')';
     }
+
+    if(type==GDL::NEXT){
+        name = QString("next (") + name + ')';
+    }
 }
 
-PConstant GDL_RelationalSentence::getRelation(){
+PConstant GDL_RelationalSentence::getRelationConstant(){
     return head;
 }
 
 GDL::GDL_TYPE GDL_RelationalSentence::getType(){
     return type;
 }
+
+bool GDL_RelationalSentence::useRawNames = false;

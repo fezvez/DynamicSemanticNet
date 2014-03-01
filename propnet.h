@@ -22,10 +22,17 @@ protected:
     void generatePropNet();
 
     QMap<QString, PProposition> propositions;
-    QVector<PProposition> basePropositions;
+    QMap<QString, PProposition> basePropositions;
+    QMap<QString, PProposition> rolePropositions;
+    QMap<QString, PProposition> standardPropositions;
+    PProposition initProposition;
 
 private:
     void addBaseProposition(QString s, PProposition p);
+    void addRoleProposition(QString s, PProposition p);
+    void addStandardProposition(QString s, PProposition p);
+
+    void constructDependency();
 
 };
 

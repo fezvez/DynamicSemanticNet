@@ -4,6 +4,7 @@
 #include "gdl.h"
 #include "gdl_relationalsentence.h"
 #include "gdl_sentence.h"
+#include "gdl_constant.h"
 
 #include <QVector>
 #include <QSharedPointer>
@@ -18,6 +19,9 @@ public:
 
     bool isGround() const;
     PRelation getHead();
+    QVector<PSentence> getBody();
+
+    QSet<PConstant> getMembers();
 
 private:
     void buildName();
@@ -25,6 +29,7 @@ private:
 private:
     PRelation head;
     QVector<PSentence> body;
+    QSet<PConstant> members;
 };
 
 #endif // GDL_RULE_H

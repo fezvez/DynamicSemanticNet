@@ -16,6 +16,9 @@ public:
     bool isGround() const;
 
 private:
+    void buildChildConstants();
+
+private:
     PSentence sentence;
 };
 

@@ -4,6 +4,8 @@
 #include <QString>
 #include <QSharedPointer>
 #include <QMap>
+#include <QSet>
+
 
 class GDL;
 typedef QSharedPointer<GDL> PGDL;
@@ -30,7 +32,7 @@ public:
 
 
 public:
-    QString toString() const;
+    virtual QString toString() const;
     virtual bool isGround() const = 0;
 
     virtual ~GDL();
@@ -77,6 +79,8 @@ public:
         }
         return QString("Type unknown");
     }
+
+
 
 public:
     static QMap<QString, GDL_TYPE> mapString2GDLType;
