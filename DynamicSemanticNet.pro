@@ -10,7 +10,7 @@ TARGET = DynamicSemanticNet
 TEMPLATE = app
 
 CONFIG += c++11
-QMAKE_CXXFLAGS += -mmacosx-version-min=10.7 -std=gnu0x -stdlib=libc+
+#QMAKE_CXXFLAGS += -mmacosx-version-min=10.7 -std=gnu0x -stdlib=libc+
 
 SOURCES += main.cpp\
         widget.cpp \
@@ -35,7 +35,8 @@ SOURCES += main.cpp\
     PropNet/propositionand.cpp \
     PropNet/propositionor.cpp \
     PropNet/propositionnot.cpp \
-    PropNet/propositionconstant.cpp
+    PropNet/propositionconstant.cpp \
+    PropNet/stratum.cpp
 
 HEADERS  += widget.h \
     fileloader.h \
@@ -62,6 +63,7 @@ HEADERS  += widget.h \
     PropNet/propositionor.h \
     PropNet/propositionnot.h \
     PropNet/propositionconstant.h \
-    GDL/gdl_tools.h
+    GDL/gdl_tools.h \
+    PropNet/stratum.h
 
 FORMS    += widget.ui

@@ -25,17 +25,17 @@ void GDL_FunctionalTerm::buildName(){
         qDebug() << "Function with arity 0 : " << name;
         return;
     case 1:
-        name = name + ' ' + body[0]->toString();
+        name = QString('(') + name + ' ' + body[0]->toString() + ')';
         return;
     default:
         break;
     }
 
-    name = name + " (" + body[0]->toString();
+    name = QString('(') + name + " (" + body[0]->toString();
     for(int i=1; i<body.size(); ++i){
         name = name + " " + body[i]->toString();
     }
-    name = name + ")";
+    name = name + "))";
 }
 
 bool GDL_FunctionalTerm::operator==(const GDL_Term & t){

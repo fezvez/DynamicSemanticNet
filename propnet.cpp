@@ -90,4 +90,6 @@ void PropNet::constructDependency(){
             qDebug() << "Rule has head " << rule->getHead()->getRelationConstant()->toString() << "\t and dependence : " << GDL_Tools::printMembers(rule->getMembers());
         }
     }
+
+
 }

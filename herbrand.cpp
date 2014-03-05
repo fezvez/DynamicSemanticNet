@@ -87,17 +87,18 @@ void Herbrand::generateHerbrand(){
 
 
 void Herbrand::generateInformation(){
+    qDebug() << "\n\nIS RELATION GROUND?";
     for(PRelation relation : relationList){
         if(relation->isGround()){
-            qDebug() << "Relation " << relation->toString() << " is ground";
+            qDebug() << "Relation " << relation->toString() << " of type : " << GDL::getStringFromGDLType(relation->getType()) << " is ground";
         }
         else{
             // I think this should not happen
             qDebug() << "Relation " << relation->toString() << " is NOT ground";
         }
-        qDebug() << "Relation is of type : " << GDL::getStringFromGDLType(relation->getType());
     }
 
+    qDebug() << "\n\nIS RULE GROUND?";
     for(PRule rule : ruleList){
         if(rule->isGround()){
             qDebug() << "Rule " << rule->toString() << " is ground";
@@ -107,6 +108,8 @@ void Herbrand::generateInformation(){
         }
     }
 
+
+    qDebug() << "\n\nLIST OF CONSTANTS";
     for(PConstant constant : objectConstantSet){
         qDebug() << "Object constant : " << constant->toString();
     }
@@ -117,7 +120,7 @@ void Herbrand::generateInformation(){
         qDebug() << "Function constant : " << constant->toString();
     }
 
-    qDebug() << "\n\n";
+    qDebug() << "\n\nORDERED RELATIONS";
 
     mapTypeToRelationContainer.clear();
     mapTypeToRelationContainer.insert(GDL::BASE, baseRelations);
@@ -142,9 +145,7 @@ void Herbrand::generateInformation(){
         }
     }
 
-    for(PRelation relation : standardRelations){
-        qDebug() << "Relation of type standard\t: " << relation->toString();
-    }
+    qDebug() << "\n\nORDERED RULES";
 
     mapTypeToRuleContainer.clear();
     mapTypeToRuleContainer.insert(GDL::BASE, baseRules);
@@ -171,14 +172,18 @@ void Herbrand::generateInformation(){
             qDebug() << "Rule of type " << GDL::getStringFromGDLType(type) << "\t: " << rule->toString();
         }
     }
-
-    for(PRule rule : standardRules){
-        qDebug() << "Rule of type standard\t: " << rule->toString();
-    }
-
-
-    qDebug() << "\n\n";
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 /**
@@ -217,6 +222,7 @@ PRule Herbrand::processRule(QString line){
 PSentence Herbrand::processSentence(QString line){
     qDebug() << "Sentence " << line;
 
+    PSentence answer;
     QStringList splitLine = split(line);
     if(splitLine[0] == QString("distinct")){
         qDebug() << "Sentence is DISTINCT sentence";
@@ -225,24 +231,31 @@ PSentence Herbrand::processSentence(QString line){
         PTerm term1 = processTerm(splitLine[1]);
         PTerm term2 = processTerm(splitLine[2]);
         PDistinctSentence distinctSentence = PDistinctSentence(new GDL_DistinctSentence(term1, term2));
-        return qSharedPointerCast<GDL_Sentence>(distinctSentence);
+        answer = qSharedPointerCast<GDL_Sentence>(distinctSentence);
     }
     else if(splitLine[0] == QString("not")){
         qDebug() << "Sentence is NOT sentence";
         Q_ASSERT(splitLine.size() == 2);
         PSentence subSentence = processRelation(splitLine[1]);
         PNotSentence notSentence = PNotSentence(new GDL_NotSentence(subSentence));
-        return qSharedPointerCast<GDL_Sentence>(notSentence);
+        answer = qSharedPointerCast<GDL_Sentence>(notSentence);
     }
     else{
         qDebug() << "Sentence is relational sentence";
-        return qSharedPointerCast<GDL_Sentence>(processRelation(line));
+        answer = qSharedPointerCast<GDL_Sentence>(processRelation(line));
     }
+
+    QString answerString = answer->toString();
+    if(!sentenceMap.contains(answerString)){
+        sentenceMap.insert(answerString, answer);
+    }
+    return sentenceMap[answerString];
 }
 
 PRelation Herbrand::processRelation(QString line, GDL::GDL_TYPE type){
     qDebug() << "Relational sentence " << line;
 
+    PRelation answer;
     QStringList splitLine = split(line);
 
     qDebug() << "Relation constant is : " << splitLine[0];
@@ -259,14 +272,20 @@ PRelation Herbrand::processRelation(QString line, GDL::GDL_TYPE type){
     GDL::GDL_TYPE subtype = GDL::getGDLTypeFromString(splitLine[0]);
 
     if(splitLine[0] == QString("base")
-    || splitLine[0] == QString("init")
-    || splitLine[0] == QString("next")
-    || splitLine[0] == QString("true")){
+            || splitLine[0] == QString("init")
+            || splitLine[0] == QString("next")
+            || splitLine[0] == QString("true")){
         Q_ASSERT(splitLine.size() == 2);
         PRelation relation = processRelation(splitLine[1], subtype);
         // Do a little something here
         //PRelation t= qSharedPointerCast<GDL_RelationalSentence>(relation);
-        return relation;
+        answer = relation;
+
+        QString answerString = answer->toString();
+        if(!relationMap.contains(answerString)){
+            relationMap.insert(answerString, answer);
+        }
+        return relationMap[answerString];
     }
     else if(splitLine[0] == QString("input")
             || splitLine[0] == QString("legal")
@@ -282,9 +301,16 @@ PRelation Herbrand::processRelation(QString line, GDL::GDL_TYPE type){
     }
 
     if(type == GDL::NONE){
-        return PRelation(new GDL_RelationalSentence(head, body, subtype));
+        answer = PRelation(new GDL_RelationalSentence(head, body, subtype));
     }
-    return PRelation(new GDL_RelationalSentence(head, body, type));
+    else{
+        answer = PRelation(new GDL_RelationalSentence(head, body, type));
+    }
+    QString answerString = answer->toString();
+    if(!relationMap.contains(answerString)){
+        relationMap.insert(answerString, answer);
+    }
+    return relationMap[answerString];
 }
 
 PTerm Herbrand::processTerm(QString line){
@@ -316,6 +342,8 @@ PTerm Herbrand::processTerm(QString line){
 
 PFunction Herbrand::processFunction(QString line){
     qDebug() << "Function " << line;
+
+    PFunction answer;
     QStringList splitLine = split(line);
 
     PConstant function = PConstant(new GDL_Constant(splitLine[0]));
@@ -323,9 +351,8 @@ PFunction Herbrand::processFunction(QString line){
     if(!constantMap.contains(functionConstant)){
         constantMap.insert(functionConstant, function);
         functionConstantSet.insert(function);
-        function = constantMap[functionConstant];
     }
-
+    function = constantMap[functionConstant];
 
     QVector<PTerm> body;
     for(int i = 1; i<splitLine.size(); ++i){
@@ -333,7 +360,12 @@ PFunction Herbrand::processFunction(QString line){
         body.append(term);
     }
 
-    return PFunction(new GDL_FunctionalTerm(function, body));
+    answer = PFunction(new GDL_FunctionalTerm(function, body));
+    QString answerString = answer->toString();
+    if(!functionMap.contains(answerString)){
+        functionMap.insert(answerString, answer);
+    }
+    return functionMap[answerString];
 }
 
 /**

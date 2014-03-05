@@ -58,6 +58,10 @@ protected:
     QSet<PConstant> functionConstantSet;
     QSet<PConstant> relationConstantSet;
 
+    QMap<QString, PSentence> sentenceMap;
+    QMap<QString, PRelation> relationMap;
+    QMap<QString, PFunction> functionMap;
+
     QMap<GDL::GDL_TYPE, QVector<PRelation>> mapTypeToRelationContainer;
     QMap<GDL::GDL_TYPE, QVector<PRule>> mapTypeToRuleContainer;
 

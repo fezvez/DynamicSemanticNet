@@ -8,15 +8,10 @@ GDL_Rule::GDL_Rule(PRelation h, QVector<PSentence> b):
 {
     buildName();
 
-    qDebug() << "Building rule members";
     for(PSentence s : b){
-        qDebug() << "Members : " << s->getChildConstants();
         members = members.unite(s->getChildConstants());
     }
 
-    for(PConstant c : members){
-        qDebug() << "Member " << c->toString() << "\tadress : " << c.data();
-    }
 }
 
 bool GDL_Rule::isGround() const{
@@ -41,11 +36,11 @@ void GDL_Rule::buildName(){
         break;
     }
 
-    name = name + " (" + body[0]->toString();
+    name = name + " " + body[0]->toString();
     for(int i=1; i<body.size(); ++i){
-        name = name + ") (" + body[i]->toString();
+        name = name + " " + body[i]->toString();
     }
-    name = name + "))";
+    name = name + ")";
 }
 
 PRelation GDL_Rule::getHead(){

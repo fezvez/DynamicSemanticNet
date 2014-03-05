@@ -35,34 +35,35 @@ void GDL_RelationalSentence::buildName(){
         qDebug() << "Relation with arity 0 : " << rawName;
         break;
     case 1:
-        rawName = rawName + ' ' + body[0]->toString();
+        rawName = QString('(') + rawName + ' ' + body[0]->toString() + ')';
         break;
     default:
-        rawName = rawName + " (" + body[0]->toString();
+        rawName = QString('(') + rawName + " (" + body[0]->toString();
         for(int i=1; i<body.size(); ++i){
             rawName = rawName + " " + body[i]->toString();
         }
-        rawName = rawName + ")";
+        rawName = rawName + "))";
         break;
     }
 
+    if(type==GDL::NEXT){
+        rawName = QString("next ") + rawName;
+    }
     name = rawName;
 
     if(type==GDL::BASE){
-        name = QString("base (") + name + ')';
+        name = QString("base ") + name;
     }
 
     if(type==GDL::TRUE){
-        name = QString("true (") + name + ')';
+        name = QString("true ") + name;
     }
 
     if(type==GDL::INIT){
-        name = QString("init (") + name + ')';
+        name = QString("init ") + name;
     }
 
-    if(type==GDL::NEXT){
-        name = QString("next (") + name + ')';
-    }
+
 }
 
 PConstant GDL_RelationalSentence::getRelationConstant(){
