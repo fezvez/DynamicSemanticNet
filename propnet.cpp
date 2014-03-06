@@ -16,7 +16,7 @@ void PropNet::loadKif(const QStringList &sl){
 }
 
 void PropNet::generatePropNet(){
-    qDebug() << "PROPNET";
+    qDebug() << "\n\nPROPNET";
 
     GDL::GDL_TYPE base = GDL::BASE;
     QVector<PRelation> baseContainer = mapTypeToRelationContainer[base];
@@ -87,7 +87,9 @@ void PropNet::constructDependency(){
         QVector<PRule> rules = mapTypeToRuleContainer[type];
         for(PRule rule : rules){
             qDebug() << "Rule of type " << GDL::getStringFromGDLType(type) << "\t: " << rule->toString();
-            qDebug() << "Rule has head " << rule->getHead()->getRelationConstant()->toString() << "\t and dependence : " << GDL_Tools::printMembers(rule->getMembers());
+            qDebug() << "Rule has head " << rule->getHead()->getRelationConstant()->toString()
+                     << "\tDependence : " << GDL_Tools::printMembers(rule->getDependentConstants())
+                     << "\tNegative Dependence : " << GDL_Tools::printMembers(rule->getDependentConstantsNegative());
         }
     }
 

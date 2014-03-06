@@ -9,6 +9,7 @@
 #include "GDL/gdl_rule.h"
 #include "GDL/gdl_functionalterm.h"
 #include "GDL/gdl_notsentence.h"
+#include "GDL/gdl_nextsentence.h"
 
 #include <QStringList>
 #include <QObject>
@@ -19,11 +20,36 @@
 #include <QMap>
 #include <QSet>
 
+class Stratum;
+typedef QSharedPointer<Stratum> PStratum;
 
+class Stratum{
+public:
+    Stratum(PConstant n);
+
+    void addDependency(PStratum s);
+    void addDependencyNegative(PStratum s);
+
+    PConstant getNode();
+    int getStrata();
+    bool updateStrata();
+    bool updateStrataStrongly();
+
+    QString toString();
+
+private:
+    PConstant node;
+    QSet<PStratum> dependency;
+    QSet<PStratum> dependencyNegative;
+
+    int strata;
+};
 
 class Herbrand : public QObject
 {
     Q_OBJECT
+
+
 public:
     Herbrand(QObject * parent = 0);
 
@@ -33,6 +59,7 @@ public slots:
 protected:
     void cleanFile();
     void generateHerbrand();
+    void generateStratum();
     void generateInformation();
 
 signals:
@@ -58,9 +85,6 @@ protected:
     QSet<PConstant> functionConstantSet;
     QSet<PConstant> relationConstantSet;
 
-    QMap<QString, PSentence> sentenceMap;
-    QMap<QString, PRelation> relationMap;
-    QMap<QString, PFunction> functionMap;
 
     QMap<GDL::GDL_TYPE, QVector<PRelation>> mapTypeToRelationContainer;
     QMap<GDL::GDL_TYPE, QVector<PRule>> mapTypeToRuleContainer;
@@ -79,7 +103,9 @@ protected:
     QVector<PRule> terminalRules;
     QVector<PRule> standardRules;
 
+    QMap<PConstant, PStratum> stratumMap;
 
+protected:
     QStringList rawKif;
     QStringList lineKif;
 
@@ -88,5 +114,8 @@ protected:
     QRegExp leftPar;
     QRegExp rightPar;
 };
+
+
+
 
 #endif // HERBRAND_H

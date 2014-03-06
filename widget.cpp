@@ -156,7 +156,7 @@ void Widget::initialize(){
     player = PPlayer(new Player(this));
     //herbrand = PHerbrand(new Herbrand(this));
     propnet = PPropNet(new PropNet(this));
-    GDL_RelationalSentence::setRawNames(true);
+    GDL_RelationalSentence::setHumanReadableNames(true);
 
     //connect(this, SIGNAL(kifProcessed(QStringList)), player.data(), SLOT(updateKif(QStringList)));
     connect(this, SIGNAL(kifProcessed(QStringList)), propnet.data(), SLOT(loadKif(QStringList)));

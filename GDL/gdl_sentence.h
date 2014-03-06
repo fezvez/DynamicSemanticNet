@@ -11,10 +11,12 @@ class GDL_Sentence : public GDL
 {
 public:
     bool isGround() const = 0;
-    QSet<PConstant> getChildConstants();
+    QSet<PConstant> getDependentConstants();
+    QSet<PConstant> getDependentConstantsNegative();
 
 protected:
-    QSet<PConstant> childConstants;
+    QSet<PConstant> dependentConstants;
+    QSet<PConstant> dependentConstantsNegative;
 };
 
 #endif // GDL_SENTENCE_H

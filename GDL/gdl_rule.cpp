@@ -9,7 +9,8 @@ GDL_Rule::GDL_Rule(PRelation h, QVector<PSentence> b):
     buildName();
 
     for(PSentence s : b){
-        members = members.unite(s->getChildConstants());
+        dependentConstants = dependentConstants.unite(s->getDependentConstants());
+        dependentConstantsNegative = dependentConstantsNegative.unite(s->getDependentConstantsNegative());
     }
 
 }
@@ -51,6 +52,10 @@ QVector<PSentence> GDL_Rule::getBody(){
     return body;
 }
 
-QSet<PConstant> GDL_Rule::getMembers(){
-    return members;
+QSet<PConstant> GDL_Rule::getDependentConstants(){
+    return dependentConstants;
+}
+
+QSet<PConstant> GDL_Rule::getDependentConstantsNegative(){
+    return dependentConstantsNegative;
 }

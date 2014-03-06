@@ -4,7 +4,8 @@ GDL_OrSentence::GDL_OrSentence(QVector<PSentence> b):
     body(b)
 {
     for(PSentence s : b){
-        childConstants = childConstants.unite(s->getChildConstants());
+        dependentConstants = dependentConstants.unite(s->getDependentConstants());
+        dependentConstantsNegative = dependentConstantsNegative.unite(s->getDependentConstantsNegative());
     }
 }
 

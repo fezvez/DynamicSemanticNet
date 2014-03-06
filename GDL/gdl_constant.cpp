@@ -3,7 +3,7 @@
 #include <QDebug>
 
 GDL_Constant::GDL_Constant(const QString & s){
-name = s;
+    name = s;
 }
 
 GDL_Constant::GDL_Constant(const GDL_Constant &constant){

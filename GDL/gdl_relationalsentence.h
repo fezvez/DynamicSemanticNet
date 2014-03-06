@@ -18,25 +18,26 @@ public:
     QString toString() const;
     bool isGround() const;
 
-    PConstant getRelationConstant();
+    virtual PConstant getRelationConstant();
+    virtual PConstant getHead();
     GDL::GDL_TYPE getType();
 
 public:
-    static void setRawNames(bool b){
-        useRawNames = b;
+    static void setHumanReadableNames(bool b){
+        useHumanReadableNames = b;
     }
 
 private:
     void buildName();
 
-private:
+protected:
     PConstant head;
     QVector<PTerm> body;
     GDL::GDL_TYPE type;
-    QString rawName;
+    QString humanReadableName;
 
 private:
-    static bool useRawNames;
+    static bool useHumanReadableNames;
 
 };
 

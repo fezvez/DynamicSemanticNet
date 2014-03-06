@@ -8,12 +8,12 @@ GDL_RelationalSentence::GDL_RelationalSentence(PConstant h, QVector<PTerm> b, GD
     type(t)
 {
     buildName();
-    childConstants.insert(h);
+    dependentConstants.insert(h);
 }
 
 QString GDL_RelationalSentence::toString() const{
-    if(useRawNames){
-        return rawName;
+    if(useHumanReadableNames){
+        return humanReadableName;
     }
     return name;
 }
@@ -29,27 +29,27 @@ bool GDL_RelationalSentence::isGround() const{
 }
 
 void GDL_RelationalSentence::buildName(){
-    rawName = head->toString();
+    humanReadableName = getHead()->toString();
     switch(body.size()){
     case 0:
-        qDebug() << "Relation with arity 0 : " << rawName;
+        qDebug() << "Relation with arity 0 : " << humanReadableName;
         break;
     case 1:
-        rawName = QString('(') + rawName + ' ' + body[0]->toString() + ')';
+        humanReadableName = QString('(') + humanReadableName + ' ' + body[0]->toString() + ')';
         break;
     default:
-        rawName = QString('(') + rawName + " (" + body[0]->toString();
+        humanReadableName = QString('(') + humanReadableName + " (" + body[0]->toString();
         for(int i=1; i<body.size(); ++i){
-            rawName = rawName + " " + body[i]->toString();
+            humanReadableName = humanReadableName + " " + body[i]->toString();
         }
-        rawName = rawName + "))";
+        humanReadableName = humanReadableName + "))";
         break;
     }
 
     if(type==GDL::NEXT){
-        rawName = QString("next ") + rawName;
+        humanReadableName = QString("next ") + humanReadableName;
     }
-    name = rawName;
+    name = humanReadableName;
 
     if(type==GDL::BASE){
         name = QString("base ") + name;
@@ -70,8 +70,12 @@ PConstant GDL_RelationalSentence::getRelationConstant(){
     return head;
 }
 
+PConstant GDL_RelationalSentence::getHead(){
+    return getRelationConstant();
+}
+
 GDL::GDL_TYPE GDL_RelationalSentence::getType(){
     return type;
 }
 
-bool GDL_RelationalSentence::useRawNames = false;
+bool GDL_RelationalSentence::useHumanReadableNames = false;

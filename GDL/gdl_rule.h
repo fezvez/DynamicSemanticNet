@@ -21,7 +21,8 @@ public:
     PRelation getHead();
     QVector<PSentence> getBody();
 
-    QSet<PConstant> getMembers();
+    QSet<PConstant> getDependentConstants();
+    QSet<PConstant> getDependentConstantsNegative();
 
 private:
     void buildName();
@@ -29,7 +30,8 @@ private:
 private:
     PRelation head;
     QVector<PSentence> body;
-    QSet<PConstant> members;
+    QSet<PConstant> dependentConstants;
+    QSet<PConstant> dependentConstantsNegative;
 };
 
 #endif // GDL_RULE_H
