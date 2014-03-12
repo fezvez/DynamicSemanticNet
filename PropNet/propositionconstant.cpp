@@ -6,6 +6,12 @@ PropositionConstant::PropositionConstant(QString n):
 
 }
 
+PropositionConstant::PropositionConstant(PRelation relation):
+    Proposition(relation->toString())
+{
+
+}
+
 bool PropositionConstant::isTrue() const{
     return true;
 }

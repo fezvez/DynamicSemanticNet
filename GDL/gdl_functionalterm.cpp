@@ -38,6 +38,29 @@ void GDL_FunctionalTerm::buildName(){
     name = name + "))";
 }
 
+QString GDL_FunctionalTerm::buildNameRecursively(){
+
+    QString answer = head->buildNameRecursively();
+    switch(body.size()){
+    case 0:
+        qDebug() << "Function with arity 0 : " << answer;
+        return answer;
+    case 1:
+        answer = QString('(') + answer + ' ' + body[0]->buildNameRecursively() + ')';
+        return answer;
+    default:
+        break;
+    }
+
+    answer = QString('(') + answer + " (" + body[0]->buildNameRecursively();
+    for(int i=1; i<body.size(); ++i){
+        answer = answer + " " + body[i]->buildNameRecursively();
+    }
+    answer = answer + "))";
+
+    return answer;
+}
+
 bool GDL_FunctionalTerm::operator==(const GDL_Term & t){
     return name==t.toString();
 }

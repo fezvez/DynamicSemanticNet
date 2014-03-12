@@ -126,18 +126,85 @@ void Herbrand::generateStratum(){
         }
     }
 
-    bool update = true;
-    int nbIteration = 0;
+    /**
+     * Specific for input legal does
+     */
 
-    while(update && nbIteration<100){
+    PConstant inputConstant;
+    PConstant legalConstant;
+    PConstant doesConstant;
+
+    if(constantMap.contains(QString("input"))){
+        inputConstant = constantMap[QString("input")];
+    }
+    if(constantMap.contains(QString("legal"))){
+        legalConstant = constantMap[QString("legal")];
+    }
+    if(constantMap.contains(QString("does"))){
+        doesConstant = constantMap[QString("does")];
+    }
+
+    if(!(inputConstant.isNull() || legalConstant.isNull())){
+        stratumMap[legalConstant]->addDependency(stratumMap[inputConstant]);
+    }
+    if(!(legalConstant.isNull() || doesConstant.isNull())){
+        stratumMap[doesConstant]->addDependency(stratumMap[legalConstant]);
+    }
+
+    qDebug() << "Input exists " << !inputConstant.isNull();
+    qDebug() << "Legal exists " << !legalConstant.isNull();
+    qDebug() << "Does  exists " << !doesConstant.isNull();
+
+
+    bool update = true;
+    int nbStrongIteration = 0;
+
+    while(update && nbStrongIteration<100){
         update = false;
+        nbStrongIteration++;
         for(PStratum stratum : stratumMap.values()){
-            stratum->updateStrataStrongly();
+            update = update || stratum->updateStrataStrongly();
         }
     }
 
-    for(PStratum s : stratumMap.values()){
-        qDebug() << "Stratum " << s->toString();
+    update = true;
+    int nbIteration = 0;
+
+    while(update && nbIteration<10000){
+        update = false;
+        nbIteration++;
+        for(PStratum stratum : stratumMap.values()){
+            update = update || stratum->updateStrata();
+        }
+    }
+
+
+    qDebug() << "Nb strong iterations : " << nbStrongIteration;
+    qDebug() << "Nb iterations : " << nbIteration;
+
+
+    QList<PStratum> listOfStratum = stratumMap.values();
+    qSort(listOfStratum.begin(), listOfStratum.end(), Stratum::greaterThan);
+
+
+
+    int strata = -1;
+    for(PStratum s : listOfStratum){
+        int currentStrata = s->getStrata();
+        if(strata != currentStrata){
+            stratifiedConstants.push_back(QVector<PConstant>());
+            strata = currentStrata;
+        }
+        stratifiedConstants.last().append(s->getNode());
+    }
+
+    qDebug() << "\n";
+    for(QVector<PConstant> v : stratifiedConstants){
+        qDebug() << "New stratum";
+        for(PConstant c : v){
+            qDebug() << c->toString();
+        }
+        qDebug() << "\n";
     }
 }
 
@@ -227,10 +294,24 @@ void Herbrand::generateInformation(){
 
 void Herbrand::processKifLine(QString line){
     if(line.contains(ruleRegExp)){
-        ruleList.append(processRule(line));
+        PRule rule = processRule(line);
+        ruleList.append(rule);
+        PConstant head = rule->getHead()->getHead();
+        if(!constantToRuleMap.contains(head)){
+            constantToRuleMap.insert(head, QVector<PRule>());
+        }
+        constantToRuleMap[head].append(rule);
     }
     else{
-        relationList.append(processRelation(line));
+        PRelation relation = processRelation(line);
+        relationList.append(relation);
+        PConstant head = relation->getHead();
+        if(!constantToRelationMap.contains(head)){
+            constantToRelationMap.insert(head, QVector<PRelation>());
+        }
+        constantToRelationMap[head].append(relation);
+
+        Q_ASSERT(relation->isGround());
     }
 }
 
@@ -243,7 +324,7 @@ PRule Herbrand::processRule(QString line){
 
     Q_ASSERT(splitLine[0] == QString("<="));
 
-    PRelation head = processRelation(splitLine[1]);
+    PRelation head = processRelation(splitLine[1], true);
     QVector<PSentence> body;
 
     for(int i = 2; i<splitLine.size(); ++i){
@@ -282,7 +363,7 @@ PSentence Herbrand::processSentence(QString line){
     return answer;
 }
 
-PRelation Herbrand::processRelation(QString line, GDL::GDL_TYPE type){
+PRelation Herbrand::processRelation(QString line, bool isHead, GDL::GDL_TYPE type){
     qDebug() << "Relational sentence " << line;
 
     PRelation answer;
@@ -303,20 +384,14 @@ PRelation Herbrand::processRelation(QString line, GDL::GDL_TYPE type){
     qDebug() << "Subtype is : " << GDL::getStringFromGDLType(subtype);
 
     if(splitLine[0] == QString("base")
+            || splitLine[0] == QString("next")
             || splitLine[0] == QString("init")
             || splitLine[0] == QString("true")){
         Q_ASSERT(splitLine.size() == 2);
-        PRelation relation = processRelation(splitLine[1], subtype);
-        // Do a little something here
-        //PRelation t= qSharedPointerCast<GDL_RelationalSentence>(relation);
+        PRelation relation = processRelation(splitLine[1], isHead, subtype);
         return relation;
     }
-    else if(splitLine[0] == QString("next")){
-        Q_ASSERT(splitLine.size() == 2);
-        PRelation relation = processRelation(splitLine[1], subtype);
-
-        return relation;
-    }
+    // All this section can be commented
     else if(splitLine[0] == QString("input")
             || splitLine[0] == QString("legal")
             || splitLine[0] == QString("does")) {
@@ -330,29 +405,32 @@ PRelation Herbrand::processRelation(QString line, GDL::GDL_TYPE type){
         }
     }
 
+    PConstant skolemHead;
+    if(isHead){
+        QString skolemString = head->toString();
+
+
+        if(!skolemMap.contains(head)){
+            skolemMap.insert(head, QVector<PConstant>());
+        }
+        int index = skolemMap[head].size();
+
+        skolemString = skolemString + "_SK_" + QString::number(index);
+
+        if(type == GDL::NEXT){
+            skolemString = QString("next_") + skolemString;
+        }
+
+        skolemHead = PConstant(new GDL_Constant(skolemString));
+
+        qDebug() << "Skolem string : " << skolemHead->toString();
+    }
+
     if(type == GDL::NONE){
-
-        answer = PRelation(new GDL_RelationalSentence(head, body, subtype));
-
+        answer = PRelation(new GDL_RelationalSentence(head, body, subtype, skolemHead));
     }
     else{
-        if(type == GDL::NEXT){
-            QString nextHeadName("next_HAX_");
-            nextHeadName = nextHeadName + head->toString();
-            PConstant nextHead = PConstant(new GDL_Constant(nextHeadName));
-
-            QString relationConstant = nextHead->toString();
-            if(!constantMap.contains(relationConstant)){
-                constantMap.insert(relationConstant, nextHead);
-                relationConstantSet.insert(nextHead);
-            }
-            nextHead = constantMap[relationConstant];
-
-            answer = PRelation(new GDL_NextSentence(nextHead, head, body, type));
-        }
-        else{
-            answer = PRelation(new GDL_RelationalSentence(head, body, type));
-        }
+        answer = PRelation(new GDL_RelationalSentence(head, body, type, skolemHead));
     }
 
     return answer;
@@ -491,7 +569,7 @@ PConstant Stratum::getNode(){
     return node;
 }
 
-int Stratum::getStrata(){
+int Stratum::getStrata() const{
     return strata;
 }
 

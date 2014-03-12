@@ -12,7 +12,14 @@ public:
     GDL_Variable(const QString & s);
 
     bool isGround() const;
+    QString buildNameRecursively();
+
     bool operator==(const GDL_Term & t);
+
+    void assignRecursiveName(QString s);
+
+protected:
+    QString recursiveName;
 
 };
 

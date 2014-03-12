@@ -7,6 +7,7 @@
 #include "PropNet/propositionor.h"
 #include "PropNet/propositionnot.h"
 #include "PropNet/propositionconstant.h"
+#include "PropNet/propositiondatabase.h"
 
 class PropNet : public Herbrand
 {
@@ -21,18 +22,22 @@ public slots:
 protected:
     void generatePropNet();
 
-    QMap<QString, PProposition> propositions;
+    QMap<QString, PProposition> propositions; // EDB
+
+
     QMap<QString, PProposition> basePropositions;
     QMap<QString, PProposition> rolePropositions;
     QMap<QString, PProposition> standardPropositions;
+
     PProposition initProposition;
+    PDatabase propositionDatabase;
+
 
 private:
     void addBaseProposition(QString s, PProposition p);
     void addRoleProposition(QString s, PProposition p);
     void addStandardProposition(QString s, PProposition p);
 
-    void constructDependency();
 
 };
 

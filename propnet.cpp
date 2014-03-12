@@ -7,62 +7,71 @@
 PropNet::PropNet(QObject *parent):
     Herbrand(parent)
 {
-
+    GDL::setSkolemNames(false);
 }
 
 void PropNet::loadKif(const QStringList &sl){
     Herbrand::loadKif(sl);
-    generatePropNet();
+    //generatePropNet();
 }
 
 void PropNet::generatePropNet(){
     qDebug() << "\n\nPROPNET";
 
-    GDL::GDL_TYPE base = GDL::BASE;
-    QVector<PRelation> baseContainer = mapTypeToRelationContainer[base];
+    for(QVector<PConstant> vec : stratifiedConstants){
+        qDebug() << "\n\nSTRATUM";
+        for(PConstant constant : vec){
+            qDebug() << "Constant " << constant->toString();
+            if(constantToRelationMap.contains(constant)){
+                for(PRelation relation : constantToRelationMap[constant]){
+                    if(relation->getType() == GDL::INIT){
+                        continue;
+                    }
+                    qDebug() << "\tRelation " << relation->toString();
+                }
+            }
 
-    for(PRelation relation : baseContainer){
-        Q_ASSERT(relation->isGround());
-        QString s = relation->toString();
-        PProposition prop = PProposition(new PropositionConstant(relation->toString()));
-        addBaseProposition(s, prop);
+            if(constantToRuleMap.contains(constant)){
+                for(PRule rule : constantToRuleMap[constant]){
+
+                    qDebug() << "\tRule " << rule->toString();
+                }
+            }
+        }
     }
 
-    GDL::GDL_TYPE none = GDL::NONE;
-    QVector<PRelation> noneContainer = mapTypeToRelationContainer[none];
+    //propositionDatabase = PDatabase(new PropositionDatabase());
 
-    for(PRelation relation : noneContainer){
-        Q_ASSERT(relation->isGround());
-        QString s = relation->toString();
-        PProposition prop = PProposition(new PropositionConstant(relation->toString()));
-        addStandardProposition(s, prop);
+    for(QVector<PConstant> vec : stratifiedConstants){
+        qDebug() << "\n\nSTRATUM 2";
+        for(PConstant constant : vec){
+            qDebug() << "Constant " << constant->toString();
+            bool update = true;
+            while(update){
+                update = false;
+
+                if(constantToRelationMap.contains(constant)){
+                    for(PRelation relation : constantToRelationMap[constant]){
+                        Q_ASSERT(relation->isGround());
+
+                    }
+                }
+
+                if(constantToRuleMap.contains(constant)){
+                    for(PRule rule : constantToRuleMap[constant]){
+
+                    }
+                }
+            }
+
+        }
     }
 
-    GDL::GDL_TYPE role = GDL::ROLE;
-    QVector<PRelation> roleContainer = mapTypeToRelationContainer[role];
+    qDebug() << "\n\nSTRATUM 3";
 
-    for(PRelation relation : roleContainer){
-        Q_ASSERT(relation->isGround());
-        QString s = relation->toString();
-        PProposition prop = PProposition(new PropositionConstant(relation->toString()));
-        addRoleProposition(s, prop);
-    }
-
-    initProposition = PProposition(new PropositionConstant(QString("init")));
-//    GDL::GDL_TYPE init = GDL::INIT;
-//    QVector<PRelation> initContainer = mapTypeToRelationContainer[init];
-
-//    for(PRelation relation : initContainer){
-//        Q_ASSERT(relation->isGround());
-//        QString s = relation->toString();
-//        PProposition prop = PProposition(new PropositionConstant(relation->toString()));
-//        addInitProposition(s, prop);
-//    }
-
-    constructDependency();
-
-    for(PProposition prop : propositions.values()){
-        qDebug() << "Proposition : " << prop->toString();
+    for(PRule rule : ruleList){
+        qDebug() << rule->toString();
+        qDebug() << rule->buildNameRecursively();
     }
 }
 
@@ -78,20 +87,7 @@ void PropNet::addRoleProposition(QString s, PProposition p){
 
 void PropNet::addStandardProposition(QString s, PProposition p){
     propositions.insert(s,p);
-    basePropositions.insert(s,p);
+    standardPropositions.insert(s,p);
 }
 
-void PropNet::constructDependency(){
-    qDebug() << "Dependency construction\n\n";
-    for(GDL::GDL_TYPE type : mapTypeToRuleContainer.keys()){
-        QVector<PRule> rules = mapTypeToRuleContainer[type];
-        for(PRule rule : rules){
-            qDebug() << "Rule of type " << GDL::getStringFromGDLType(type) << "\t: " << rule->toString();
-            qDebug() << "Rule has head " << rule->getHead()->getRelationConstant()->toString()
-                     << "\tDependence : " << GDL_Tools::printMembers(rule->getDependentConstants())
-                     << "\tNegative Dependence : " << GDL_Tools::printMembers(rule->getDependentConstantsNegative());
-        }
-    }
 
-
-}

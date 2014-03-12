@@ -15,6 +15,7 @@ public:
     GDL_OrSentence(QVector<PSentence> b);
 
     bool isGround() const;
+    QString buildNameRecursively();
 
 
 private:

@@ -10,6 +10,7 @@ class GDL_Term : public GDL
 {
 public:
     bool isGround() const = 0;
+    QString buildNameRecursively() = 0;
     virtual bool operator==(const GDL_Term & t) = 0;
 };
 

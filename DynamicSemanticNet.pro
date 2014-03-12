@@ -10,14 +10,14 @@ TARGET = DynamicSemanticNet
 TEMPLATE = app
 
 CONFIG += c++11
-QMAKE_CXXFLAGS += -mmacosx-version-min=10.7 -std=gnu0x -stdlib=libc+
+
+#QMAKE_CXXFLAGS += -mmacosx-version-min=10.7 -std=gnu0x -stdlib=libc+
 
 SOURCES += main.cpp\
         widget.cpp \
     fileloader.cpp \
     kifloader.cpp \
     dynamicsemanticnet.cpp \
-    player.cpp \
     GDL/gdl.cpp \
     GDL/gdl_constant.cpp \
     GDL/gdl_term.cpp \
@@ -36,13 +36,13 @@ SOURCES += main.cpp\
     PropNet/propositionor.cpp \
     PropNet/propositionnot.cpp \
     PropNet/propositionconstant.cpp \
-    GDL/gdl_nextsentence.cpp
+    GDL/gdl_nextsentence.cpp \
+    PropNet/propositiondatabase.cpp
 
 HEADERS  += widget.h \
     fileloader.h \
     kifloader.h \
     dynamicsemanticnet.h \
-    player.h \
     tree.hh \
     GDL/gdl.h \
     GDL/gdl_constant.h \
@@ -64,6 +64,7 @@ HEADERS  += widget.h \
     PropNet/propositionnot.h \
     PropNet/propositionconstant.h \
     GDL/gdl_tools.h \
-    GDL/gdl_nextsentence.h
+    GDL/gdl_nextsentence.h \
+    PropNet/propositiondatabase.h
 
 FORMS    += widget.ui

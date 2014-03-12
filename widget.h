@@ -15,11 +15,9 @@
 #include <QDir>
 #include <QRegExp>
 
-#include "player.h"
 #include "propnet.h"
 #include "herbrand.h"
 
-typedef QSharedPointer<Player> PPlayer;
 typedef QSharedPointer<PropNet> PPropNet;
 typedef QSharedPointer<Herbrand> PHerbrand;
 
@@ -84,7 +82,6 @@ private:
     int afac;
 
 private:
-    PPlayer player;
     PPropNet propnet;
     PHerbrand herbrand;
 

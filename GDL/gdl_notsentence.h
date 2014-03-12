@@ -14,6 +14,7 @@ public:
     GDL_NotSentence(PSentence s);
 
     bool isGround() const;
+    QString buildNameRecursively();
 
 private:
     void buildChildConstants();

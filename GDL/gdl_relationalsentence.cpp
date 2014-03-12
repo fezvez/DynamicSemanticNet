@@ -2,18 +2,20 @@
 
 #include <QDebug>
 
-GDL_RelationalSentence::GDL_RelationalSentence(PConstant h, QVector<PTerm> b, GDL_TYPE t):
+GDL_RelationalSentence::GDL_RelationalSentence(PConstant h, QVector<PTerm> b, GDL_TYPE t, PConstant skolemH):
     head(h),
     body(b),
-    type(t)
+    type(t),
+    skolemHead(skolemH)
 {
     buildName();
+    buildSkolemName();
     dependentConstants.insert(h);
 }
 
 QString GDL_RelationalSentence::toString() const{
-    if(useHumanReadableNames){
-        return humanReadableName;
+    if(useSkolemNames){
+        return skolemName;
     }
     return name;
 }
@@ -29,41 +31,81 @@ bool GDL_RelationalSentence::isGround() const{
 }
 
 void GDL_RelationalSentence::buildName(){
-    humanReadableName = getHead()->toString();
+    name = getHead()->toString();
     switch(body.size()){
     case 0:
-        qDebug() << "Relation with arity 0 : " << humanReadableName;
+        qDebug() << "Relation with arity 0 : " << name;
         break;
     case 1:
-        humanReadableName = QString('(') + humanReadableName + ' ' + body[0]->toString() + ')';
+        name = QString('(') + name + ' ' + body[0]->toString() + ')';
         break;
     default:
-        humanReadableName = QString('(') + humanReadableName + " (" + body[0]->toString();
+        name = QString('(') + name + " (" + body[0]->toString();
         for(int i=1; i<body.size(); ++i){
-            humanReadableName = humanReadableName + " " + body[i]->toString();
+            name = name + " " + body[i]->toString();
         }
-        humanReadableName = humanReadableName + "))";
+        name = name + "))";
         break;
     }
 
-    if(type==GDL::NEXT){
-        humanReadableName = QString("next ") + humanReadableName;
-    }
-    name = humanReadableName;
 
+    if(type==GDL::NEXT){
+        name = QString("next ") + name;
+    }
     if(type==GDL::BASE){
         name = QString("base ") + name;
     }
-
     if(type==GDL::TRUE){
         name = QString("true ") + name;
     }
-
     if(type==GDL::INIT){
         name = QString("init ") + name;
     }
+}
 
+void GDL_RelationalSentence::buildSkolemName(){
+    if(skolemHead.isNull()){
+        skolemName = head->toString();
+    }
+    else{
+        skolemName = skolemHead->toString();
+    }
 
+    switch(body.size()){
+    case 0:
+        qDebug() << "Relation with arity 0 : " << skolemName;
+        break;
+    case 1:
+        skolemName = QString('(') + skolemName + ' ' + body[0]->toString() + ')';
+        break;
+    default:
+        skolemName = QString('(') + skolemName + " (" + body[0]->toString();
+        for(int i=1; i<body.size(); ++i){
+            skolemName = skolemName + " " + body[i]->toString();
+        }
+        skolemName = skolemName + "))";
+        break;
+    }
+}
+
+QString GDL_RelationalSentence::buildNameRecursively(){
+    QString answer = getHead()->buildNameRecursively();
+    switch(body.size()){
+    case 0:
+        break;
+    case 1:
+        answer = QString('(') + answer + ' ' + body[0]->buildNameRecursively() + ')';
+        break;
+    default:
+        answer = QString('(') + answer + " (" + body[0]->buildNameRecursively();
+        for(int i=1; i<body.size(); ++i){
+            answer = answer + " " + body[i]->buildNameRecursively();
+        }
+        answer = answer + "))";
+        break;
+    }
+
+    return answer;
 }
 
 PConstant GDL_RelationalSentence::getRelationConstant(){
@@ -78,4 +120,4 @@ GDL::GDL_TYPE GDL_RelationalSentence::getType(){
     return type;
 }
 
-bool GDL_RelationalSentence::useHumanReadableNames = false;
+

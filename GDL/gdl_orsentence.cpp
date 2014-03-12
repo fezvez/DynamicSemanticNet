@@ -18,3 +18,8 @@ bool GDL_OrSentence::isGround() const{
     }
     return true;
 }
+
+ QString GDL_OrSentence::buildNameRecursively(){
+     // TODO
+    return name;
+ }

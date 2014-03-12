@@ -19,7 +19,9 @@ public:
     GDL_FunctionalTerm(PConstant h, QVector<PTerm> b);
 
     bool isGround() const;
+    QString buildNameRecursively();
     bool operator==(const GDL_Term & t);
+
 
 private:
     void buildName();

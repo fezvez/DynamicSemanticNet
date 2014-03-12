@@ -3,11 +3,15 @@
 GDL_NotSentence::GDL_NotSentence(PSentence s):
     sentence(s)
 {
-    name = QString("not (") + s->toString() + ')';
-    dependentConstantsNegative = s->getDependentConstants();
-    dependentConstants = s->getDependentConstantsNegative();
+    name = QString("not (") + sentence->toString() + ')';
+    dependentConstantsNegative = sentence->getDependentConstants();
+    dependentConstants = sentence->getDependentConstantsNegative();
 }
 
 bool GDL_NotSentence::isGround() const{
     return sentence->isGround();
+}
+
+QString GDL_NotSentence::buildNameRecursively(){
+   return QString("not (") + sentence->buildNameRecursively() + ')';
 }

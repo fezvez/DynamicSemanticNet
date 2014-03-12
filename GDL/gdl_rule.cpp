@@ -44,6 +44,28 @@ void GDL_Rule::buildName(){
     name = name + ")";
 }
 
+QString GDL_Rule::buildNameRecursively(){
+    QString answer = QString("(<= ") + head->buildNameRecursively();
+    switch(body.size()){
+    case 0:
+        qDebug() << "Rule with arity 0 : " << answer;
+        return answer;
+    case 1:
+        answer = answer + ' ' + body[0]->buildNameRecursively() + ')';
+        return answer;
+    default:
+        break;
+    }
+
+    answer = answer + " " + body[0]->buildNameRecursively();
+    for(int i=1; i<body.size(); ++i){
+        answer = answer + " " + body[i]->buildNameRecursively();
+    }
+    answer = answer + ")";
+
+    return answer;
+}
+
 PRelation GDL_Rule::getHead(){
     return head;
 }

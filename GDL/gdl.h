@@ -34,6 +34,7 @@ public:
 public:
     virtual QString toString() const;
     virtual bool isGround() const = 0;
+    virtual QString buildNameRecursively() = 0;
 
     virtual ~GDL();
 
@@ -80,11 +81,16 @@ public:
         return QString("Type unknown");
     }
 
+    static void setSkolemNames(bool b){
+        useSkolemNames = b;
+    }
+
 
 
 public:
     static QMap<QString, GDL_TYPE> mapString2GDLType;
     static QMap<GDL_TYPE, QString> mapGDLType2String;
+    static bool useSkolemNames;
 
 protected:
     QString name;

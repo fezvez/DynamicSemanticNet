@@ -31,11 +31,16 @@ public:
     void addDependencyNegative(PStratum s);
 
     PConstant getNode();
-    int getStrata();
+    int getStrata() const;
     bool updateStrata();
     bool updateStrataStrongly();
 
     QString toString();
+
+public:
+    static bool greaterThan(PStratum s1, PStratum s2){
+      return s1->getStrata()<s2->getStrata();
+    }
 
 private:
     PConstant node;
@@ -70,11 +75,23 @@ private:
     void processKifLine(QString line);
     PRule processRule(QString line);
     PSentence processSentence(QString line);
-    PRelation processRelation(QString line, GDL::GDL_TYPE type = GDL::NONE);
+    PRelation processRelation(QString line, bool isHead = false, GDL::GDL_TYPE type = GDL::NONE);
     PTerm processTerm(QString line);
     PFunction processFunction(QString line);
 
     QStringList split(QString line);
+
+private:
+
+
+protected:
+    QStringList rawKif;
+    QStringList lineKif;
+
+    QRegExp ruleRegExp;
+    QRegExp whitespaceRegExp;
+    QRegExp leftPar;
+    QRegExp rightPar;
 
 protected:
     QVector<PRule> ruleList;
@@ -103,16 +120,16 @@ protected:
     QVector<PRule> terminalRules;
     QVector<PRule> standardRules;
 
-    QMap<PConstant, PStratum> stratumMap;
+    QMap<PConstant, QVector<PConstant>> skolemMap;
 
 protected:
-    QStringList rawKif;
-    QStringList lineKif;
+    QMap<PConstant, PStratum> stratumMap;
+    QVector<QVector<PConstant>> stratifiedConstants;
 
-    QRegExp ruleRegExp;
-    QRegExp whitespaceRegExp;
-    QRegExp leftPar;
-    QRegExp rightPar;
+    QMap<PConstant, QVector<PRule>> constantToRuleMap;
+    QMap<PConstant, QVector<PRelation>> constantToRelationMap;
+
+
 };
 
 

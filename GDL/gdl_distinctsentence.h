@@ -16,6 +16,7 @@ public:
     GDL_DistinctSentence(PTerm t1, PTerm t2);
 
     bool isGround() const;
+    QString buildNameRecursively();
 
 protected:
     PTerm term1;

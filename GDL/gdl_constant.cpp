@@ -14,6 +14,10 @@ bool GDL_Constant::isGround() const{
     return true;
 }
 
+QString GDL_Constant::buildNameRecursively(){
+    return name;
+}
+
 bool GDL_Constant::operator==(const GDL_Term & t){
     return name==t.toString();
 }
